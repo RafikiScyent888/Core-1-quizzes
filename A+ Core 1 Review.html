@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>CompTIA A+ Core 1 (220-1201) — Exam Mode</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root{
+    --bg:#0b1220;
+    --panel:#0f172a;
+    --panel2:#111827;
+    --line:#243042;
+    --text:#e5e7eb;
+    --muted:#93a4bf;
+    --accent:#2563eb;
+    --accent2:#1d4ed8;
+    --good:#14532d;
+    --good-line:#22c55e;
+    --bad:#7f1d1d;
+    --bad-line:#ef4444;
+    --btn:#1f2937;
+    --btn2:#334155;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,Arial,Helvetica,sans-serif;
+    background:linear-gradient(180deg,#08101d 0%,#0b1220 100%);
+    color:var(--text);
+    padding:22px;
+  }
+  .container{max-width:980px;margin:0 auto}
+  .hero{
+    background:rgba(15,23,42,.9);
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:20px 20px 16px;
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
+    margin-bottom:16px;
+  }
+  h1{margin:0 0 6px;text-align:center;font-size:28px}
+  .subtitle{text-align:center;color:#c7d2fe;margin:0 0 16px}
+  .toolbar{
+    display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+    margin-bottom:14px;
+  }
+  button{
+    border:none;cursor:pointer;border-radius:14px;padding:10px 14px;
+    font-weight:700;font-size:14px;color:var(--text);background:var(--btn);
+    transition:transform .04s ease, background .15s ease;
+  }
+  button:hover{background:var(--btn2)}
+  button:active{transform:translateY(1px)}
+  .primary{background:var(--accent);color:#fff}
+  .primary:hover{background:var(--accent2)}
+  .progress-wrap{
+    margin:10px auto 0;max-width:720px;
+  }
+  .progress-row{
+    display:flex;justify-content:space-between;gap:10px;align-items:center;
+    font-size:14px;color:var(--muted);margin-bottom:8px;
+  }
+  .bar{
+    height:12px;border-radius:999px;background:#0b1324;border:1px solid var(--line);overflow:hidden;
+  }
+  .fill{
+    height:100%;width:0%;background:linear-gradient(90deg,#2563eb 0%,#60a5fa 100%);
+    transition:width .2s ease;
+  }
+  .card{
+    background:rgba(15,23,42,.92);
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:18px;
+    box-shadow:0 16px 40px rgba(0,0,0,.2);
+  }
+  .qnum{
+    display:inline-flex;align-items:center;gap:8px;
+    color:#bfdbfe;background:#0b1324;border:1px solid var(--line);
+    padding:6px 10px;border-radius:999px;font-size:13px;font-weight:800;
+  }
+  .qtext{
+    margin:14px 0 16px;font-size:20px;line-height:1.45;font-weight:800;
+  }
+  .answers{display:grid;gap:10px}
+  .answer{
+    width:100%;text-align:left;background:var(--panel2);color:var(--text);
+    border:1px solid #233047;border-radius:18px;padding:14px 15px;
+    display:flex;gap:12px;align-items:flex-start;
+  }
+  .answer:hover{background:#0f1a2d}
+  .answer[disabled]{cursor:default;opacity:1}
+  .answer.correct{background:var(--good);border-color:var(--good-line)}
+  .answer.wrong{background:var(--bad);border-color:var(--bad-line)}
+  .answer-label{
+    min-width:24px;font-weight:900;color:#bfdbfe;
+  }
+  .answer-text{
+    white-space:pre-wrap;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:14px;line-height:1.45;
+  }
+  .after{
+    margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  }
+  .status{
+    min-height:24px;font-size:14px;font-weight:700;color:#cbd5e1;
+  }
+  details{
+    margin-top:10px;border:1px solid var(--line);border-radius:16px;background:#0b1324;
+    padding:10px 12px;
+  }
+  summary{cursor:pointer;font-weight:800;color:#c7d2fe}
+  .exp{margin-top:10px;color:#cbd5e1;line-height:1.5}
+  .footer-note{
+    text-align:center;color:var(--muted);font-size:13px;margin-top:14px;
+  }
+  .score-card{
+    margin-top:16px;background:#0b1324;border:1px solid var(--line);border-radius:18px;padding:16px;display:none;
+  }
+  .score-title{font-size:20px;font-weight:900;margin:0 0 6px}
+  .score-line{color:#cbd5e1;margin:0 0 10px}
+  .review-list{margin:0;padding-left:18px;color:#cbd5e1;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <h1>CompTIA A+ Core 1 (220-1201) — Exam Mode Quiz</h1>
+    <p class="subtitle">Exam Mode: one question at a time, per-load answer shuffle, collapsible explanations, progress tracking, score summary, and hardened distractors.</p>
+
+    <div class="toolbar">
+      <button class="primary" id="restartBtn">Restart Quiz</button>
+      <button id="showExpBtn">Show Explanation</button>
+      <button id="nextBtn">Next Question</button>
+      <button id="downloadBtn">Download HTML</button>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-row">
+        <div id="progressText">Question 1 / 72</div>
+        <div id="scoreText">Score: 0 / 0</div>
+      </div>
+      <div class="bar"><div class="fill" id="fill"></div></div>
+    </div>
+  </div>
+
+  <div class="card" id="quizCard">
+    <div class="qnum" id="qnum">Q1</div>
+    <div class="qtext" id="qtext"></div>
+    <div class="answers" id="answers"></div>
+    <div class="after">
+      <div class="status" id="status"></div>
+    </div>
+    <details id="expBox">
+      <summary>Explanation</summary>
+      <div class="exp" id="expText"></div>
+    </details>
+
+    <div class="score-card" id="scoreCard">
+      <div class="score-title">Quiz complete</div>
+      <p class="score-line" id="finalScoreLine"></p>
+      <ul class="review-list" id="reviewList"></ul>
+    </div>
+  </div>
+
+  <div class="footer-note">A+ 220-1201 focus in your saved previous-format Exam Mode with hardened same-domain distractors.</div>
+</div>
+
+<script>
+const QUESTIONS = [{"q":"A user’s phone can charge, but the battery percentage never increases and the device gets unusually warm. The cable is known-good. What is the best next step?","choices":["Try a higher-amperage charger first","Replace the charging port assembly","Inspect for liquid damage and swelling","Check battery-health and thermal warnings"],"a":2,"explain":"Heat + no charge gain strongly suggests battery/charging circuit issues and potential battery swelling or damage. Inspect immediately for safety before swapping ports or changing settings."},{"q":"A technician needs to connect a laptop to a smartphone for internet access using a cable to reduce RF interference. Which method should be used?","choices":["Bluetooth PAN tethering mode","USB tethering configuration","Wi-Fi hotspot tethering mode","Mobile broadband via SIM slot"],"a":1,"explain":"USB tethering provides a wired path, avoids Wi-Fi RF congestion, and is common for reliable laptop internet via a phone."},{"q":"A tablet’s touchscreen intermittently registers taps in the wrong location after screen replacement. What is the most likely fix?","choices":["Re-seat the digitizer ribbon cable","Calibrate the touchscreen digitizer","Update the tablet firmware package","Replace the display adhesive layer"],"a":0,"explain":"After a screen repair, misaligned/intermittent touch is commonly caused by a loose digitizer connector or improperly seated ribbon."},{"q":"A user wants to pay with their phone at terminals that support tap-to-pay. Which feature is required?","choices":["NFC with secure element enabled","Bluetooth Low Energy turned on","Infrared port configured correctly","USB-C OTG activated on device"],"a":0,"explain":"Tap-to-pay relies on NFC and typically uses a secure element or equivalent secure storage for payment credentials."},{"q":"A user reports their phone’s screen is very dim even at maximum brightness, but an external flashlight reveals an image. What failed component is most likely?","choices":["Backlight or display inverter circuit","LCD panel signal cable damage","Ambient light sensor misreading","Display power-management setting"],"a":0,"explain":"A visible image with no illumination points to backlight circuitry failure (common symptom across many displays)."},{"q":"A workstation shows an APIPA address and cannot reach any network resources. The link light is on. What is the most likely cause?","choices":["DHCP server is unreachable or down","DHCP scope is fully exhausted","Wrong VLAN on the switch port","Duplicate IP address conflict"],"a":0,"explain":"APIPA (169.254.x.x) indicates the device could not obtain an address from DHCP."},{"q":"A technician must connect a switch to a router in a small office. Which cable type is typically used?","choices":["Straight-through Ethernet cable","Crossover Ethernet cable only","Console rollover serial cable","Shielded Cat6a patch cable"],"a":0,"explain":"Modern devices often auto-MDI/MDIX, but standard guidance: unlike devices (router to switch) use straight-through."},{"q":"A user can resolve hostnames but cannot reach a remote website by IP or name. Other sites work. What should be checked first?","choices":["Route to the destination network","Default gateway to that site","Proxy or content-filter rule","Upstream firewall ACL entry"],"a":0,"explain":"If resolution works yet a specific site is unreachable by IP or name, the path/route or upstream connectivity to that network is the likely issue."},{"q":"A new VoIP deployment experiences choppy audio during heavy file transfers. Which configuration would most directly help?","choices":["Enable QoS for voice traffic queues","Increase bandwidth reservation for voice","Place phones on a separate voice VLAN","Lower codec quality on handsets"],"a":0,"explain":"QoS prioritizes latency-sensitive voice packets over bulk transfers, reducing jitter and choppiness."},{"q":"A technician needs to verify that a DNS name resolves to the correct IP address from a Windows client. Which tool is best?","choices":["nslookup command-line utility","ping command with hostname","ipconfig /displaydns review","tracert path discovery tool"],"a":0,"explain":"nslookup queries DNS directly and displays the resolved address."},{"q":"A user complains their Wi-Fi is slow only in one conference room. Signal strength is low and interference is likely. What is the best first action?","choices":["Survey channels and adjust AP band","Move the client to 5 GHz","Relocate or add an access point","Reduce co-channel interference nearby"],"a":0,"explain":"A site survey/channel assessment is the first step for localized Wi-Fi performance issues and interference."},{"q":"A desktop powers on but no video appears. Fans spin and the system beeps one long and two short tones. What is the most likely issue?","choices":["Video adapter failure or not seated","DIMM not seated correctly","PCIe auxiliary power unplugged","Wrong monitor input selected"],"a":0,"explain":"A common POST beep pattern indicates a video/graphics problem (card failure or seating)."},{"q":"A technician wants the fastest storage for an OS drive in a modern laptop. Which option is best?","choices":["NVMe M.2 solid-state drive","SATA M.2 solid-state drive","2.5-inch SATA solid-state drive","Hybrid SSHD 2.5-inch drive"],"a":0,"explain":"NVMe over PCIe provides the highest throughput and lowest latency among these options."},{"q":"A user adds new RAM and the system becomes unstable with random reboots. The RAM is the correct type. What should be done next?","choices":["Verify timings/voltage and reseat","Run memory diagnostics on new DIMMs","Check BIOS for XMP compatibility","Test each module individually"],"a":0,"explain":"Incompatibility often comes from timings/voltage, mixed kits, or poor seating. Start by reseating and verifying BIOS settings."},{"q":"A technician must connect a modern monitor to a PC for both video and audio over a single cable. Which interface is best?","choices":["HDMI digital audio/video link","DisplayPort digital audio/video","USB-C with DisplayPort Alt Mode","DVI-D video-only connection"],"a":0,"explain":"HDMI carries digital video and audio. VGA and DVI-D are video-only in typical PC contexts."},{"q":"A workstation needs additional graphics performance for 3D modeling. Which component upgrade is most appropriate?","choices":["Install a dedicated PCIe GPU card","Increase system RAM capacity","Upgrade to a faster workstation CPU","Move project files to an SSD"],"a":0,"explain":"3D workloads benefit most from a dedicated GPU with appropriate VRAM and compute capability."},{"q":"A technician is selecting a UPS for a single desktop and monitor. Which UPS specification matters most for runtime estimation?","choices":["VA rating and battery capacity","Watt rating under expected load","Runtime at half-load estimate","Line-interactive output topology"],"a":0,"explain":"Load handling and runtime depend on VA/watt capability and battery capacity."},{"q":"A laptop’s internal drive is being replaced. The laptop uses a small card-like SSD mounted on the motherboard with a single screw. Which drive type is this?","choices":["M.2 form factor solid-state drive","mSATA solid-state drive module","2.5-inch SATA solid-state drive","Mini-PCIe expansion card"],"a":0,"explain":"A small gumstick drive secured by one screw is typical of M.2 SSDs (SATA or NVMe)."},{"q":"A laser printer produces faded output and the print density setting does not help. The toner is not low. What should be replaced next?","choices":["Imaging drum unit assembly","Fuser assembly maintenance kit","Transfer roller replacement kit","Toner cartridge agitator gear"],"a":0,"explain":"Consistently faded prints with adequate toner often indicates a worn drum/photoconductor or related imaging components."},{"q":"A printer repeatedly jams at the point where paper enters the device. What is the most likely cause?","choices":["Worn pickup rollers in tray","Worn separation pad in tray","Paper guides set too tight","Damaged feed roller clutch"],"a":0,"explain":"Jams at entry commonly come from worn pickup rollers or separation pads failing to feed cleanly."},{"q":"An inkjet printer has streaks and missing lines across multiple colors. What is the best initial maintenance step?","choices":["Run printhead cleaning alignment","Perform nozzle check and alignment","Replace the affected ink cartridges","Clean encoder strip if supported"],"a":0,"explain":"Streaks/missing lines on inkjets commonly indicate clogged nozzles—use cleaning/alignment utilities first."},{"q":"A technician must configure a printer so multiple PCs can print without direct USB connections. Which solution best fits?","choices":["Network printer via Ethernet/Wi-Fi","USB printer shared from a host PC","Printer attached to an external print server","Wireless direct printing only"],"a":0,"explain":"A network printer (or a printer shared via print server) supports multiple clients without USB to each PC."},{"q":"A user wants to run a second OS on their laptop for testing without rebooting, using a hosted environment on the same machine. What is needed?","choices":["Type 2 hypervisor installed locally","Dual-boot with separate partitions","Remote desktop to a lab server","Nested VM inside cloud instance"],"a":0,"explain":"A Type 2 hypervisor runs on top of a host OS and allows guest OSs without rebooting."},{"q":"A small business wants to reduce on-prem hardware by using email and document editing in a browser with minimal local installs. Which model fits best?","choices":["SaaS cloud productivity suite","Hosted virtual desktop service","PaaS application runtime platform","IaaS virtual server instance"],"a":0,"explain":"Browser-based email/docs is a classic SaaS use case."},{"q":"A technician is troubleshooting a VM that has no network connectivity, but the host can browse normally. What should be checked first?","choices":["Virtual switch and NIC assignment","Guest NIC set to disconnected","Wrong NAT or bridged mode selected","Guest firewall blocking outbound traffic"],"a":0,"explain":"VM networking often breaks due to incorrect virtual switch mode (NAT/bridged) or wrong virtual NIC mapping."},{"q":"A technician arrives on-site and sees a strong smell of burning plastic from a desktop. What is the best immediate action?","choices":["Power down and unplug immediately","Use a Class C extinguisher if needed","Isolate the device from combustibles","Do not continue normal diagnostics"],"a":0,"explain":"Safety first: remove power to prevent fire risk and further damage before any diagnostics."},{"q":"After replacing a motherboard, a PC powers on but cycles on/off repeatedly. The CPU and RAM are supported. What should be verified next?","choices":["Front-panel connector wiring pins","EPS12V CPU power cable seated","Motherboard short to the chassis","RAM seated in proper slots"],"a":0,"explain":"A restart loop after a board swap often comes from miswired front-panel headers, shorts, or power/reset wiring."},{"q":"A user needs the best Wi-Fi performance in a high-density office while minimizing interference. Which band is most appropriate?","choices":["5 GHz band with more channels","6 GHz band where supported","20 MHz channels in 2.4 GHz","2.4 GHz band with fewer channels"],"a":0,"explain":"5 GHz typically offers more non-overlapping channels and less interference than crowded 2.4 GHz."},{"q":"A technician is asked which TCP port is commonly used for secure web browsing. Which port should they answer?","choices":["TCP 443 for HTTPS service","TCP 80 for HTTP service","TCP 8443 alternate HTTPS service","TCP 22 for SSH service"],"a":0,"explain":"HTTPS typically uses TCP 443."},{"q":"A cable run between two network closets is experiencing EMI from nearby motors. Which medium best mitigates EMI over longer distance?","choices":["Fiber optic cabling installation","Shielded twisted pair cabling","Single-mode fiber backbone run","Plenum-rated Cat6 with shielding"],"a":0,"explain":"Fiber is immune to electromagnetic interference and supports longer runs."},{"q":"A company wants to enforce screen lock, remote wipe, and application policies on employee phones. What should be implemented?","choices":["Mobile device management platform","Mobile application management suite","Enterprise mobility management service","Company-owned device enrollment profile"],"a":0,"explain":"MDM provides centralized policy enforcement, remote wipe, and device/app management."},{"q":"A phone connects to Wi-Fi but cannot browse the internet, while other devices on the same Wi-Fi can. Which setting is most likely wrong?","choices":["Incorrect DNS or gateway settings","Static IP set outside the subnet","Proxy settings enabled on device","Captive portal authentication pending"],"a":0,"explain":"If other devices work, the network is fine; the phone likely has incorrect IP/DNS/gateway configuration."},{"q":"A PC shuts down under load and the CPU temperature is very high. The fan spins. What is the most likely cause?","choices":["Thermal paste is dried or absent","Heatsink is not seated evenly","CPU fan curve set too low","Case airflow is badly restricted"],"a":0,"explain":"Overheating under load often points to poor heat transfer—dried/missing thermal compound or poor heatsink seating."},{"q":"A technician needs to connect a modern internal drive at SATA speeds. Which connector is required for data?","choices":["SATA 7-pin data cable link","Mini-SAS internal data connector","U.2 enterprise drive connector","M.2 edge connector interface"],"a":0,"explain":"SATA uses a 7-pin data cable for data and a separate 15-pin power connector for power."},{"q":"A user wants to add a second monitor to a laptop that only has USB-C. Which capability must the USB-C port support to output video?","choices":["DisplayPort Alt Mode support","Thunderbolt video output support","USB-C dock with video chipset","HDMI alternate mode support"],"a":0,"explain":"USB-C outputs video when it supports DisplayPort Alt Mode (or Thunderbolt, which can carry DP)."},{"q":"A laser printer outputs pages with toner that smears easily when touched. Which component is most likely failing?","choices":["Fuser assembly heating element","Fuser pressure roller assembly","Wrong paper type in driver","Low-temperature fuser setting"],"a":0,"explain":"The fuser applies heat/pressure to bond toner to paper. Smearing indicates inadequate fusing."},{"q":"A user asks what device provides NAT, basic firewalling, and connects multiple wired clients in a home network. Which device is most accurate?","choices":["SOHO router with switch ports","Cable modem/router gateway combo","Wireless router with NAT enabled","Layer 3 switch with DHCP"],"a":0,"explain":"A typical SOHO router combines NAT, firewall, routing, and often an integrated switch/Wi-Fi AP."},{"q":"A technician needs fault tolerance with minimal capacity loss using two drives. Which RAID level best fits?","choices":["RAID 1 mirroring configuration","RAID 0 striping only setup","RAID 5 parity across 3+","JBOD spanning configuration"],"a":0,"explain":"RAID 1 mirrors two drives for redundancy (one can fail). RAID 0 has no fault tolerance; RAID 5 needs 3+ drives."},{"q":"A VM is slow when multiple applications run, and the host has plenty of CPU but low free memory. What resource should be increased first?","choices":["Allocate additional RAM to VM","Reduce memory overcommit on host","Increase page file inside guest","Move VM to faster storage"],"a":0,"explain":"Memory pressure causes swapping and severe slowdowns. If the host has RAM available, increase VM RAM first."},{"q":"A technician is asked for the maximum recommended length of a standard copper Ethernet run (Cat5e/Cat6) between a switch and endpoint. What is the best answer?","choices":["100 meters for horizontal run","90 meters plus patch cables","328 feet per copper segment","30 meters for patch cable only"],"a":0,"explain":"Standard Ethernet over twisted pair is typically 100 meters (328 feet) maximum per segment."},{"q":"A phone user wants their email to remain on the server and sync across multiple devices. Which protocol best matches this requirement?","choices":["IMAP synchronized mailbox access","Exchange ActiveSync mailbox sync","POP3 download-only mailbox mode","SMTP outbound mail relay use"],"a":0,"explain":"IMAP keeps mail on the server and syncs state across clients. POP3 typically downloads locally."},{"q":"A technician must enable virtualization extensions for a user’s lab software. Where is this setting typically changed?","choices":["UEFI/BIOS firmware configuration","Hypervisor settings in Windows","System Information virtualization report","CPU advanced settings menu"],"a":0,"explain":"CPU virtualization features (Intel VT-x/AMD-V) are enabled in BIOS/UEFI."},{"q":"A small office wants strong Wi-Fi security with a shared passphrase (no RADIUS). Which option is best?","choices":["WPA2/WPA3 Personal with AES","WPA2 Personal with AES only","WPA3 Personal with SAE","WPA Enterprise with RADIUS"],"a":0,"explain":"Without RADIUS, use WPA2/WPA3 Personal (PSK) with AES/CCMP for strong encryption."},{"q":"A user wants to connect a legacy office projector that only supports VGA. The laptop has HDMI. Which adapter is needed?","choices":["HDMI to VGA active adapter","USB-C dock with VGA output","DisplayPort to VGA active adapter","VGA to HDMI converter box"],"a":0,"explain":"HDMI is digital and VGA is analog; typically requires an active HDMI-to-VGA adapter for conversion."},{"q":"A network printer is reachable by IP, but users cannot print by hostname. What is the most likely issue?","choices":["DNS record missing or incorrect","Wrong printer hostname in TCP port","Stale mDNS or WSD discovery entry","Print server queue points elsewhere"],"a":0,"explain":"IP connectivity is fine; hostname failure points to name resolution (DNS) rather than printer hardware."},{"q":"A laptop display works on an external monitor but the internal screen is black. The brightness keys do nothing. What is the most likely cause?","choices":["Bad LCD cable or panel issue","Failed backlight power circuit","Lid-closure sensor stuck active","Loose display eDP connector"],"a":0,"explain":"External video works, so GPU is fine. Internal display path likely has a cable/backlight/panel failure."},{"q":"A technician needs to test continuity and correct pinout on a twisted-pair cable run. Which tool should be used?","choices":["Cable tester with wiremap","Tone generator and probe kit","Multimeter set to continuity","Loopback plug for NIC testing"],"a":0,"explain":"A cable tester/wiremap verifies continuity, opens, shorts, and correct pair mapping."},{"q":"A company requires that cloud resources be dedicated to their organization only, hosted by a provider, and not shared with other tenants. What model is this?","choices":["Private cloud hosted deployment","Single-tenant hosted environment","Public cloud shared multi-tenant","Hybrid cloud with on-prem only"],"a":0,"explain":"A hosted private cloud is dedicated to one organization while still hosted by a third-party provider."},{"q":"A technician installs a high-end GPU that requires additional power. Which connector is commonly used for GPU auxiliary power?","choices":["PCIe 6/8-pin power connector","12VHPWR GPU power connector","Dual 6-pin PCIe adapters","Molex-to-PCIe power adapter"],"a":0,"explain":"Dedicated GPUs often require PCIe 6-pin or 8-pin (or 12VHPWR on newer) auxiliary power connectors."},{"q":"A host has IP 192.168.10.25 with subnet mask 255.255.255.0. Which address is the network ID?","choices":["192.168.10.0 network address","192.168.10.255 broadcast address","192.168.10.1 default gateway","192.168.10.25 host address"],"a":0,"explain":"With /24 (255.255.255.0), the network ID is the .0 address in that subnet."},{"q":"A user’s Bluetooth headset pairs but audio cuts out when the phone is in a pocket. What is the most likely cause?","choices":["RF attenuation or interference issue","Low battery in the headset","Phone radio blocked by pocket","Competing 2.4 GHz traffic nearby"],"a":0,"explain":"Body blocking and nearby RF sources can attenuate 2.4 GHz signals, causing dropouts."},{"q":"A technician is replacing a CPU and must avoid bending pins. Which modern platform commonly has pins in the socket rather than on the CPU?","choices":["LGA socket design platform type","PGA socket design platform type","BGA soldered CPU package type","SP3 server socket platform"],"a":0,"explain":"LGA (Land Grid Array) typically places pins in the socket, not on the CPU."},{"q":"A laser printer prints with a consistent ghost image repeating down the page at regular intervals. What is the most likely culprit?","choices":["Imaging drum or fuser defect","Transfer roller surface defect","Toner cartridge sealing issue","Wrong paper type calibration"],"a":0,"explain":"Repeating artifacts at a fixed interval often trace to drum circumference issues or fuser roller defects."},{"q":"A technician must install IP phones and wants to power them over the Ethernet cable. Which switch feature is required?","choices":["Power over Ethernet capability","Voice VLAN support on switch","LLDP-MED device negotiation","Inline power budget available"],"a":0,"explain":"PoE supplies power over Ethernet to compatible devices like VoIP phones and APs."},{"q":"While replacing RAM, what is the best way to reduce the risk of electrostatic discharge damage?","choices":["Use an ESD strap to ground","Touch grounded metal before handling","Use an antistatic mat on bench","Handle DIMMs by the edges"],"a":0,"explain":"An ESD strap (properly grounded) and ESD-safe handling procedures reduce electrostatic risk."},{"q":"A remote employee needs secure access to internal resources over the internet. Which solution best provides this?","choices":["VPN tunnel to company gateway","SSL VPN client connection","Remote desktop through VPN","Site-to-site VPN concentrator"],"a":0,"explain":"A VPN encrypts traffic and provides authenticated access without exposing internal services directly to the internet."},{"q":"A laptop battery is swollen and the trackpad is bulging upward. What should be done first?","choices":["Power down and remove battery","Stop charging and isolate device","Follow lithium battery safety steps","Do not puncture or reuse pack"],"a":0,"explain":"Swollen lithium batteries are a safety hazard. Power down and follow safe removal/disposal procedures."},{"q":"A user wants to store and sync files across devices with version history managed by a provider. Which service category fits best?","choices":["Cloud storage synchronization SaaS","Managed file sync service","Hosted collaboration storage platform","On-prem NAS with no internet"],"a":0,"explain":"Sync + versioning + multi-device access aligns with cloud storage/sync services (SaaS)."},{"q":"A technician is asked which Wi-Fi standard is commonly associated with Wi-Fi 6. What is the best answer?","choices":["802.11ax wireless standard name","802.11ac wireless standard name","802.11be wireless standard name","802.11n wireless standard name"],"a":0,"explain":"Wi-Fi 6 corresponds to 802.11ax."},{"q":"A user wants to store about 50GB on a single optical disc. Which media type best fits?","choices":["Dual-layer Blu-ray disc media","BD-R single-layer disc media","Dual-layer DVD+R disc media","Standard DVD-R disc media"],"a":0,"explain":"Dual-layer Blu-ray provides ~50GB capacity. DVDs and CDs are far smaller."},{"q":"A technician makes a change that resolves a user issue. What should be done next per best practice?","choices":["Document findings and solution steps","Verify full system functionality","Communicate results to the user","Implement preventive recommendations"],"a":0,"explain":"After verification, document the issue, resolution, and preventive steps—this is a key troubleshooting step."},{"q":"A technician needs a compact desktop build but still wants a few expansion slots. Which motherboard form factor is most likely?","choices":["MicroATX compact expansion form","Mini-ITX compact system form","ATX full-size expansion form","FlexATX small desktop form"],"a":0,"explain":"MicroATX is smaller than ATX but typically still offers multiple expansion slots."},{"q":"A host uses subnet mask 255.255.255.128. How many usable host addresses are in that subnet?","choices":["126 usable hosts per subnet","62 usable hosts per subnet","254 usable hosts per subnet","14 usable hosts per subnet"],"a":0,"explain":"/25 yields 128 addresses total, minus network and broadcast = 126 usable."},{"q":"A user wants the strongest practical device lock on a modern smartphone. Which option is generally the best?","choices":["Long alphanumeric passcode lock","Six-digit PIN with biometrics","Complex passcode with Face ID","Short PIN with swipe backup"],"a":0,"explain":"Long alphanumeric passcodes typically provide the highest resistance to guessing compared with short PINs/patterns."},{"q":"A user complains of motion blur and wants a monitor that reduces blur during fast movement. Which spec most directly helps?","choices":["Higher refresh rate display panel","Lower pixel response time panel","Adaptive sync gaming display","Backlight strobing support mode"],"a":0,"explain":"Higher refresh rate (and low response time) improves motion clarity in many scenarios."},{"q":"A technician needs to allow inbound remote desktop to a specific PC from the local LAN only. What is the best control to adjust?","choices":["Host firewall inbound rule scope","Network profile set to Private","Remote Desktop allowed users list","Router ACL for local subnet only"],"a":0,"explain":"Restricting inbound access is best done with a host firewall rule scoped to LAN subnets (and only the needed port)."},{"q":"A technician needs to add wireless capability to a desktop that has no built-in Wi-Fi. Which upgrade is most common?","choices":["Install PCIe Wi-Fi adapter card","Install USB Wi-Fi adapter dongle","Add an M.2 Wi-Fi adapter card","Replace motherboard with Wi-Fi"],"a":0,"explain":"A PCIe Wi-Fi card (or USB Wi-Fi adapter) is typical; PCIe is common for internal desktop upgrades."},{"q":"A color laser printer prints with a single color missing, but black prints fine. What is the most likely cause?","choices":["That color toner cartridge empty","Transfer belt issue for one color","Blocked toner path for that color","Failed imaging drum for that color"],"a":0,"explain":"If one color is missing, the most likely cause is the specific toner cartridge (or its delivery path) for that color."},{"q":"Multiple users suddenly cannot get an IP address, but links are up and the DHCP server is running. What is a likely cause?","choices":["DHCP scope exhausted of leases","DHCP exclusions consume address pool","Wrong subnet mask in scope options","Rogue DHCP server offering bad leases"],"a":0,"explain":"If DHCP is up but clients can’t obtain addresses, the scope may be exhausted or misconfigured."},{"q":"A company wants inexpensive endpoints that mainly connect to a remote desktop environment, with minimal local storage. What device type best fits?","choices":["Thin client terminal endpoint device","Zero client VDI endpoint device","Mini PC with remote desktop client","Low-cost Chromebook endpoint"],"a":0,"explain":"Thin clients are designed for VDI/RDS use with minimal local compute/storage."},{"q":"A user reports no audio from speakers connected to a desktop. Headphones work when plugged into the front panel. What is the best next step?","choices":["Check rear port and default output","Verify speaker power and volume","Confirm rear jack mapped to speakers","Test audio output in Sound settings"],"a":0,"explain":"If front works but rear doesn’t, verify the correct output device/port selection and rear jack wiring/enablement."},{"q":"A user in a rural area needs broadband with high latency tolerance and no cable/DSL availability. Which option is most likely?","choices":["Satellite internet service option","Fixed wireless broadband option","Cellular hotspot broadband option","Legacy DSL bonded pair option"],"a":0,"explain":"When cable/DSL/fiber aren’t available, satellite is a common rural broadband option (with higher latency)."}];
+
+function shuffle(arr){
+  const copy = [...arr];
+  for(let i=copy.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [copy[i],copy[j]]=[copy[j],copy[i]];
+  }
+  return copy;
+}
+
+function padChoicesUniformly(choices){
+  const maxLen = Math.max(...choices.map(c => c.length));
+  return choices.map(c => c + '\u00A0'.repeat(maxLen - c.length));
+}
+
+function buildRuntimeQuestion(qObj){
+  const entries = qObj.choices.map((text, idx) => ({text, idx}));
+  const shuffled = shuffle(entries);
+  const padded = padChoicesUniformly(shuffled.map(x => x.text));
+  return {
+    q: qObj.q,
+    explain: qObj.explain,
+    options: shuffled.map((item, i) => ({
+      text: item.text,
+      padded: padded[i],
+      originalIndex: item.idx
+    })),
+    answerIndex: qObj.a
+  };
+}
+
+let runtimeQuestions = [];
+let current = 0;
+let answered = false;
+let score = 0;
+let attempted = 0;
+let review = [];
+
+const qnum = document.getElementById('qnum');
+const qtext = document.getElementById('qtext');
+const answersEl = document.getElementById('answers');
+const statusEl = document.getElementById('status');
+const expBox = document.getElementById('expBox');
+const expText = document.getElementById('expText');
+const progressText = document.getElementById('progressText');
+const scoreText = document.getElementById('scoreText');
+const fill = document.getElementById('fill');
+const scoreCard = document.getElementById('scoreCard');
+const finalScoreLine = document.getElementById('finalScoreLine');
+const reviewList = document.getElementById('reviewList');
+const nextBtn = document.getElementById('nextBtn');
+const showExpBtn = document.getElementById('showExpBtn');
+
+function initQuiz(){
+  runtimeQuestions = QUESTIONS.map(buildRuntimeQuestion);
+  current = 0;
+  answered = false;
+  score = 0;
+  attempted = 0;
+  review = [];
+  scoreCard.style.display = 'none';
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const item = runtimeQuestions[current];
+  answered = false;
+  qnum.textContent = 'Q' + (current + 1);
+  qtext.textContent = item.q;
+  expText.textContent = item.explain;
+  expBox.open = false;
+  statusEl.textContent = '';
+  answersEl.innerHTML = '';
+
+  item.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'answer';
+    btn.type = 'button';
+    btn.innerHTML = '<span class="answer-label">' + String.fromCharCode(65+i) + '.</span><span class="answer-text">' + opt.padded + '</span>';
+    btn.addEventListener('click', () => chooseAnswer(i));
+    answersEl.appendChild(btn);
+  });
+
+  progressText.textContent = 'Question ' + (current + 1) + ' / ' + runtimeQuestions.length;
+  scoreText.textContent = 'Score: ' + score + ' / ' + attempted;
+  fill.style.width = ((current) / runtimeQuestions.length * 100).toFixed(1) + '%';
+  nextBtn.textContent = current === runtimeQuestions.length - 1 ? 'Finish Quiz' : 'Next Question';
+}
+
+function chooseAnswer(selected){
+  if(answered) return;
+  answered = true;
+  attempted += 1;
+
+  const item = runtimeQuestions[current];
+  const buttons = [...answersEl.querySelectorAll('.answer')];
+  buttons.forEach(b => b.disabled = true);
+
+  let pickedCorrect = false;
+
+  buttons.forEach((btn, idx) => {
+    const opt = item.options[idx];
+    if(opt.originalIndex === item.answerIndex){
+      btn.classList.add('correct');
+    }
+    if(idx === selected && opt.originalIndex !== item.answerIndex){
+      btn.classList.add('wrong');
+    }
+    if(idx === selected && opt.originalIndex === item.answerIndex){
+      pickedCorrect = true;
+    }
+  });
+
+  if(pickedCorrect){
+    score += 1;
+    statusEl.textContent = 'Correct.';
+  } else {
+    statusEl.textContent = 'Incorrect.';
+  }
+
+  review.push({
+    n: current + 1,
+    ok: pickedCorrect,
+    concept: item.q
+  });
+
+  scoreText.textContent = 'Score: ' + score + ' / ' + attempted;
+  fill.style.width = (((current + 1) / runtimeQuestions.length) * 100).toFixed(1) + '%';
+  expBox.open = true;
+}
+
+function nextQuestion(){
+  if(current < runtimeQuestions.length - 1){
+    current += 1;
+    renderQuestion();
+  } else {
+    finishQuiz();
+  }
+}
+
+function finishQuiz(){
+  qnum.textContent = 'Complete';
+  qtext.textContent = 'You reached the end of the quiz.';
+  answersEl.innerHTML = '';
+  statusEl.textContent = '';
+  expBox.open = false;
+  progressText.textContent = 'Question ' + runtimeQuestions.length + ' / ' + runtimeQuestions.length;
+  scoreText.textContent = 'Score: ' + score + ' / ' + attempted;
+  fill.style.width = '100%';
+
+  finalScoreLine.textContent = 'Final score: ' + score + ' / ' + runtimeQuestions.length + ' (' + Math.round((score / runtimeQuestions.length) * 100) + '%).';
+  reviewList.innerHTML = '';
+  review.forEach(r => {
+    const li = document.createElement('li');
+    li.textContent = 'Q' + r.n + ' — ' + (r.ok ? 'correct' : 'review needed');
+    reviewList.appendChild(li);
+  });
+  scoreCard.style.display = 'block';
+  nextBtn.textContent = 'Restart Quiz';
+}
+
+document.getElementById('restartBtn').addEventListener('click', initQuiz);
+document.getElementById('showExpBtn').addEventListener('click', () => { expBox.open = !expBox.open; });
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if(scoreCard.style.display === 'block'){
+    initQuiz();
+  } else {
+    nextQuestion();
+  }
+});
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  const blob = new Blob(['<!doctype html>\n' + document.documentElement.outerHTML], {type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Core1_1201_Like_Previous_Harder.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+initQuiz();
+</script>
+</body>
+</html>

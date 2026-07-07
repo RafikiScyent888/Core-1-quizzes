@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CompTIA A+ Core 1 - Network Troubleshooting Tools and Services</title>
+<style>
+  :root {
+    --bg: #081426;
+    --panel: #0d1b33;
+    --panel2: #10213d;
+    --text: #eef4ff;
+    --muted: #a9b9d6;
+    --accent: #4ea1ff;
+    --accent2: #7fc0ff;
+    --good: #3ddc97;
+    --bad: #ff6b6b;
+    --border: #21385f;
+    --shadow: 0 10px 30px rgba(0,0,0,.28);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(180deg, #071120 0%, #0a1730 100%);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+  }
+  .hero {
+    background: linear-gradient(180deg, rgba(78,161,255,.12), rgba(127,192,255,.05));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px 20px 16px;
+    box-shadow: var(--shadow);
+  }
+  h1 {
+    margin: 0 0 8px;
+    font-size: 1.5rem;
+  }
+  .subtitle {
+    color: var(--muted);
+    line-height: 1.45;
+    margin: 0;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .stat {
+    background: rgba(255,255,255,.03);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 14px;
+  }
+  .stat .k {
+    color: var(--muted);
+    font-size: .84rem;
+  }
+  .stat .v {
+    margin-top: 6px;
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+  .quiz {
+    margin-top: 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .progress-wrap {
+    padding: 16px 18px 8px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,.02);
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: .95rem;
+  }
+  .progress-bar {
+    height: 12px;
+    background: #0b1528;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width .25s ease;
+  }
+  .card {
+    padding: 22px 18px 18px;
+  }
+  .qnum {
+    color: var(--accent2);
+    font-size: .92rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+    letter-spacing: .2px;
+  }
+  .question {
+    font-size: 1.1rem;
+    line-height: 1.45;
+    margin-bottom: 18px;
+  }
+  .options {
+    display: grid;
+    gap: 12px;
+  }
+  button.option {
+    width: 100%;
+    text-align: left;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 14px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: transform .08s ease, border-color .15s ease, background .15s ease;
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+  button.option:hover:not([disabled]) {
+    transform: translateY(-1px);
+    border-color: var(--accent);
+  }
+  button.option[disabled] {
+    cursor: default;
+    opacity: 1;
+  }
+  .option .label {
+    display: inline-block;
+    width: 28px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+  .option .text {
+    font-family: "Courier New", Courier, monospace;
+    white-space: nowrap;
+  }
+  .option.correct {
+    border-color: rgba(61,220,151,.6);
+    background: rgba(61,220,151,.10);
+  }
+  .option.incorrect {
+    border-color: rgba(255,107,107,.55);
+    background: rgba(255,107,107,.08);
+  }
+  .feedback {
+    margin-top: 16px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,.03);
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.good {
+    border-color: rgba(61,220,151,.35);
+  }
+  .feedback.bad {
+    border-color: rgba(255,107,107,.35);
+  }
+  .feedback-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  details {
+    margin-top: 10px;
+    background: rgba(255,255,255,.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+  }
+  summary {
+    cursor: pointer;
+    color: var(--accent2);
+    font-weight: 700;
+  }
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .btn {
+    border: 1px solid var(--border);
+    color: var(--text);
+    background: var(--panel2);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn.primary {
+    background: linear-gradient(180deg, rgba(78,161,255,.24), rgba(78,161,255,.12));
+    border-color: rgba(78,161,255,.45);
+  }
+  .btn[disabled] {
+    opacity: .45;
+    cursor: not-allowed;
+  }
+  .results {
+    display: none;
+    padding: 22px 18px 22px;
+  }
+  .results.show { display: block; }
+  .score-big {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 8px 0 12px;
+  }
+  .muted { color: var(--muted); }
+  @media (max-width: 720px) {
+    .stats { grid-template-columns: 1fr; }
+    .option .text { white-space: normal; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>CompTIA A+ Core 1: Network Troubleshooting Tools and Techniques + Supporting Network Services</h1>
+      <p class="subtitle">30-question Exam Mode quiz in your saved previous-format engine. Questions focus on command-line tools, wireless and cable diagnostics, and core services such as DHCP, DNS, SMTP, POP3, IMAP, NTP, SMB, and directory services.</p>
+      <div class="stats">
+        <div class="stat"><div class="k">Mode</div><div class="v">One Question at a Time</div></div>
+        <div class="stat"><div class="k">Question Count</div><div class="v">30 Questions</div></div>
+        <div class="stat"><div class="k">Hardening</div><div class="v">Near-Miss Distractors</div></div>
+      </div>
+    </section>
+
+    <section class="quiz">
+      <div class="progress-wrap">
+        <div class="progress-top">
+          <div id="progressText">Question 1 of 30</div>
+          <div id="scoreText">Score: 0 / 0</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+
+      <div class="card" id="quizCard">
+        <div class="qnum" id="qnum"></div>
+        <div class="question" id="question"></div>
+        <div class="options" id="options"></div>
+
+        <div class="feedback" id="feedback">
+          <div class="feedback-title" id="feedbackTitle"></div>
+          <div id="feedbackText"></div>
+          <details>
+            <summary>Show explanation</summary>
+            <div id="explanation" style="margin-top:10px; line-height:1.45;"></div>
+          </details>
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="restartBtn" type="button">Restart Quiz</button>
+          <button class="btn primary" id="nextBtn" type="button" disabled>Next</button>
+        </div>
+      </div>
+
+      <div class="results" id="results">
+        <div class="muted">Quiz complete</div>
+        <div class="score-big" id="finalScore"></div>
+        <p class="muted" id="finalSummary"></p>
+        <button class="btn primary" type="button" onclick="restartQuiz()">Retake Quiz</button>
+      </div>
+    </section>
+  </div>
+
+<script>
+const rawQuestions = [{"question": "A technician needs to verify that a workstation received a valid IPv4 address, default gateway, and DNS server from DHCP. Which tool should be used first?", "options": [{"text": "ipconfig /all&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": true}, {"text": "tracert 8.8.8.8&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "netstat -an&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "nslookup localhost.", "correct": false}], "explanation": "ipconfig /all displays full TCP/IP configuration details, including the IPv4 address, subnet mask, default gateway, DHCP status, and DNS servers."}, {"question": "A user can reach local network resources but cannot reach websites by name. Pinging a public IP address succeeds. Which command best isolates a DNS resolution problem?", "options": [{"text": "nslookup example.com&nbsp;&nbsp;.", "correct": true}, {"text": "ping 127.0.0.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "net use \\\\server\\share.", "correct": false}, {"text": "arp -a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}], "explanation": "nslookup tests name resolution directly and helps confirm whether DNS is failing even when IP connectivity is working."}, {"question": "A technician wants to see each router hop between a PC and a remote host to locate where latency begins. Which tool should be used?", "options": [{"text": "tracert&nbsp;.", "correct": true}, {"text": "netstat&nbsp;.", "correct": false}, {"text": "dig&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "hostname.", "correct": false}], "explanation": "tracert shows the path packets take and identifies hop-by-hop delays or failures."}, {"question": "A technician suspects a local interface problem and wants to verify the TCP/IP stack without using the network. Which address should be pinged?", "options": [{"text": "127.0.0.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": true}, {"text": "169.254.1.10&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "224.0.0.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "255.255.255.255.", "correct": false}], "explanation": "The loopback address 127.0.0.1 tests the local TCP/IP stack without sending traffic to the network."}, {"question": "A switch port shows activity, but a user still cannot connect to the network. Which physical troubleshooting tool can help verify whether the cable is pinned correctly end to end?", "options": [{"text": "Cable tester&nbsp;&nbsp;.", "correct": true}, {"text": "Loopback plug&nbsp;.", "correct": false}, {"text": "Multimeter&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "Wi-Fi analyzer.", "correct": false}], "explanation": "A cable tester checks continuity and pair mapping to confirm the cable is correctly terminated."}, {"question": "A technician needs to identify the SSID with the strongest nearby signal and least channel overlap in a congested office. Which tool is most appropriate?", "options": [{"text": "Wi-Fi analyzer&nbsp;&nbsp;&nbsp;.", "correct": true}, {"text": "Tone generator&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "Protocol analyzer.", "correct": false}, {"text": "Punchdown tool&nbsp;&nbsp;&nbsp;.", "correct": false}], "explanation": "A Wi-Fi analyzer displays nearby wireless networks, channels, and signal strength to support WLAN troubleshooting."}, {"question": "A network printer is reachable by IP address, but users cannot browse to its hostname. DHCP leases look normal. Which supporting network service is most likely failing?", "options": [{"text": "DNS&nbsp;.", "correct": true}, {"text": "DHCP.", "correct": false}, {"text": "NTP&nbsp;.", "correct": false}, {"text": "LDAP.", "correct": false}], "explanation": "If devices are reachable by IP but not by hostname, DNS resolution is the most likely issue."}, {"question": "Multiple new workstations boot up with APIPA addresses instead of valid network settings. Which supporting network service should be checked first?", "options": [{"text": "DHCP&nbsp;&nbsp;.", "correct": true}, {"text": "DNS&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "SMTP&nbsp;&nbsp;.", "correct": false}, {"text": "Syslog.", "correct": false}], "explanation": "APIPA addresses indicate that the clients could not obtain a lease from DHCP."}, {"question": "A user can browse websites but reports that sent email stays in the Outbox. Which network service is most closely associated with sending outbound mail?", "options": [{"text": "SMTP.", "correct": true}, {"text": "IMAP.", "correct": false}, {"text": "POP3.", "correct": false}, {"text": "SNMP.", "correct": false}], "explanation": "SMTP is used for sending outgoing email messages."}, {"question": "A smartphone user wants messages to remain on the mail server and stay synchronized across multiple devices. Which service best supports that requirement?", "options": [{"text": "IMAP.", "correct": true}, {"text": "POP3.", "correct": false}, {"text": "SMTP.", "correct": false}, {"text": "TFTP.", "correct": false}], "explanation": "IMAP keeps email on the server and synchronizes mailbox state across devices."}, {"question": "A technician needs to confirm whether a Windows PC has active TCP and UDP sessions to a suspected remote system. Which command is best?", "options": [{"text": "netstat -an&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": true}, {"text": "ipconfig /flushdns.", "correct": false}, {"text": "ping -t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "gpupdate /force&nbsp;&nbsp;&nbsp;.", "correct": false}], "explanation": "netstat -an lists active connections and listening ports without relying on name resolution."}, {"question": "A PC can communicate on the local subnet but not with remote networks. The interface has a valid address and subnet mask. Which configuration item is the most likely cause?", "options": [{"text": "Missing default gateway.", "correct": true}, {"text": "Incorrect host name&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "Disabled NetBIOS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "Stale ARP cache&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}], "explanation": "The default gateway is required for traffic destined خارج the local subnet."}, {"question": "A technician needs to locate the far end of an unlabeled Ethernet drop in a wiring closet. Which tool should be used?", "options": [{"text": "Tone generator and probe.", "correct": true}, {"text": "Crimper and stripper&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "Butt set and punchdown&nbsp;&nbsp;.", "correct": false}, {"text": "Label maker and tester&nbsp;&nbsp;.", "correct": false}], "explanation": "A tone generator and probe help identify the corresponding cable among many terminations."}, {"question": "A user reports intermittent access to network shares. The technician suspects high collisions or CRC errors on a damaged NIC or cable. Which command-line tool provides the least direct help for this suspicion?", "options": [{"text": "hostname.", "correct": true}, {"text": "ping&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "netstat&nbsp;.", "correct": false}, {"text": "tracert&nbsp;.", "correct": false}], "explanation": "hostname only displays the local system name and does not assist directly with diagnosing connectivity or interface errors."}, {"question": "A branch office router must learn the correct current time so logs from multiple devices line up during incident review. Which service should be configured?", "options": [{"text": "NTP&nbsp;.", "correct": true}, {"text": "DNS&nbsp;.", "correct": false}, {"text": "DHCP.", "correct": false}, {"text": "SMB&nbsp;.", "correct": false}], "explanation": "NTP synchronizes device clocks, which is important for log correlation and troubleshooting."}, {"question": "A user can map a shared drive by using \\\\10.0.0.20\\files, but \\\\fileserver\\files fails. Which service should be investigated first?", "options": [{"text": "DNS&nbsp;.", "correct": true}, {"text": "SMTP.", "correct": false}, {"text": "DHCP.", "correct": false}, {"text": "SFTP.", "correct": false}], "explanation": "Successful access by IP but not by name points to a name resolution issue, usually DNS."}, {"question": "A technician wants to test basic reachability to a remote host and measure whether packets are being returned. Which tool is the most direct choice?", "options": [{"text": "ping&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": true}, {"text": "route print.", "correct": false}, {"text": "nbtstat&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "whois&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}], "explanation": "ping is the standard tool for testing reachability and round-trip response."}, {"question": "A wireless client keeps disconnecting whenever users in nearby offices begin using adjacent channels. Which issue is most likely being diagnosed?", "options": [{"text": "Interference&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": true}, {"text": "Open relay&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "Port mirroring&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "Address exhaustion.", "correct": false}], "explanation": "Overlapping or crowded channels can cause RF interference and unstable wireless performance."}, {"question": "A technician needs to determine which local process is listening on a specific TCP port before uninstalling software. Which command is best suited for the first check?", "options": [{"text": "netstat -ano&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": true}, {"text": "tracert -d&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "arp -d *&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "ipconfig /release.", "correct": false}], "explanation": "netstat -ano displays active connections, listening ports, and the associated PID."}, {"question": "A user reports that websites load slowly only when using hostnames, but direct IP connections are fast. Which change is the best first corrective action?", "options": [{"text": "Verify DNS server settings.", "correct": true}, {"text": "Replace the NIC driver&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "Disable SMB signing&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "Reset the print spooler&nbsp;&nbsp;&nbsp;.", "correct": false}], "explanation": "Slow hostname-based access with normal IP connectivity usually points to a DNS configuration or response issue."}, {"question": "A laptop receives a 169.254.x.x address after being moved to a new office. The link light is on. Which step is most appropriate after checking the cable?", "options": [{"text": "Test DHCP availability&nbsp;&nbsp;.", "correct": true}, {"text": "Clear the browser cache&nbsp;.", "correct": false}, {"text": "Rebuild the mail profile.", "correct": false}, {"text": "Disable IPv6 temporarily.", "correct": false}], "explanation": "A 169.254.x.x address indicates APIPA, which usually means the client could not contact a DHCP server."}, {"question": "A technician wants to inspect packet contents to confirm whether malformed DNS responses are being returned to a client. Which tool should be used?", "options": [{"text": "Protocol analyzer.", "correct": true}, {"text": "Loopback adapter&nbsp;.", "correct": false}, {"text": "Cable stripper&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "Sound level meter.", "correct": false}], "explanation": "A protocol analyzer captures and decodes packets so the technician can inspect DNS queries and responses."}, {"question": "Which network service is commonly used to provide file and printer sharing on Windows networks?", "options": [{"text": "SMB&nbsp;.", "correct": true}, {"text": "SNMP.", "correct": false}, {"text": "RDP&nbsp;.", "correct": false}, {"text": "SIP&nbsp;.", "correct": false}], "explanation": "SMB is the core protocol used for Windows file and printer sharing."}, {"question": "A technician flushes a workstation's resolver cache after a DNS record was corrected on the server. Which command performs that action?", "options": [{"text": "ipconfig /flushdns.", "correct": true}, {"text": "ipconfig /renew&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "route /f&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "net use /delete&nbsp;&nbsp;&nbsp;.", "correct": false}], "explanation": "ipconfig /flushdns clears the local DNS resolver cache so the system can retrieve fresh records."}, {"question": "Which email retrieval service typically downloads messages to a single device and may remove them from the server, depending on configuration?", "options": [{"text": "POP3.", "correct": true}, {"text": "IMAP.", "correct": false}, {"text": "SMTP.", "correct": false}, {"text": "NTP&nbsp;.", "correct": false}], "explanation": "POP3 is designed around downloading messages for local storage, unlike IMAP synchronization."}, {"question": "A technician must verify the MAC address currently associated with the default gateway on a local subnet. Which command is best?", "options": [{"text": "arp -a&nbsp;&nbsp;.", "correct": true}, {"text": "pathping.", "correct": false}, {"text": "tasklist.", "correct": false}, {"text": "telnet&nbsp;&nbsp;.", "correct": false}], "explanation": "arp -a displays the ARP cache, including IP-to-MAC mappings for local devices such as the default gateway."}, {"question": "A workstation can browse intranet sites by name but cannot access Internet websites. Internal resources and IP connectivity look normal. Which supporting network component is the best first place to check?", "options": [{"text": "DNS forwarder settings&nbsp;&nbsp;&nbsp;.", "correct": true}, {"text": "Loopback interface status.", "correct": false}, {"text": "Local print queue order&nbsp;&nbsp;.", "correct": false}, {"text": "Screen timeout policy&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}], "explanation": "If internal name resolution works but external sites fail, the DNS server's forwarding or recursion settings may be the issue."}, {"question": "A technician needs to re-request an IPv4 lease from DHCP after moving a desktop to another VLAN. Which command should be used after releasing the old address?", "options": [{"text": "ipconfig /renew&nbsp;.", "correct": true}, {"text": "netstat -r&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "tracert -h 5&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "shutdown /r /t 0.", "correct": false}], "explanation": "ipconfig /renew requests a new lease from DHCP."}, {"question": "A company uses centralized authentication so users can sign in with the same account across many systems. Which supporting network service best fits that function?", "options": [{"text": "Directory service.", "correct": true}, {"text": "Time service&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "Mail relay&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "Name cache&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}], "explanation": "Directory services such as Active Directory provide centralized authentication and authorization."}, {"question": "A technician suspects a bad patch cable between a PC and switch because connectivity drops when the cable is moved. Which issue is most likely being confirmed?", "options": [{"text": "Intermittent cable fault.", "correct": true}, {"text": "DNS cache poisoning&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "SMTP relay denial&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.", "correct": false}, {"text": "Duplicate time source&nbsp;&nbsp;&nbsp;.", "correct": false}], "explanation": "Connectivity that changes with cable movement usually points to a physical layer problem such as a broken conductor or poor termination."}];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+const questions = shuffle(rawQuestions.map(q => ({
+  ...q,
+  options: shuffle(q.options.map(opt => ({...opt})))
+})));
+
+let currentIndex = 0;
+let score = 0;
+let answered = 0;
+let locked = false;
+
+const progressText = document.getElementById('progressText');
+const scoreText = document.getElementById('scoreText');
+const progressFill = document.getElementById('progressFill');
+const qnum = document.getElementById('qnum');
+const questionEl = document.getElementById('question');
+const optionsEl = document.getElementById('options');
+const feedback = document.getElementById('feedback');
+const feedbackTitle = document.getElementById('feedbackTitle');
+const feedbackText = document.getElementById('feedbackText');
+const explanation = document.getElementById('explanation');
+const nextBtn = document.getElementById('nextBtn');
+const restartBtn = document.getElementById('restartBtn');
+const quizCard = document.getElementById('quizCard');
+const results = document.getElementById('results');
+const finalScore = document.getElementById('finalScore');
+const finalSummary = document.getElementById('finalSummary');
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  locked = false;
+  nextBtn.disabled = true;
+  feedback.className = 'feedback';
+  feedbackTitle.textContent = '';
+  feedbackText.textContent = '';
+  explanation.textContent = '';
+  progressText.textContent = `Question ${currentIndex + 1} of ${questions.length}`;
+  scoreText.textContent = `Score: ${score} / ${answered}`;
+  progressFill.style.width = `${(currentIndex / questions.length) * 100}%`;
+
+  qnum.textContent = `Question ${currentIndex + 1}`;
+  questionEl.textContent = q.question;
+  optionsEl.innerHTML = '';
+
+  const labels = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'option';
+    btn.innerHTML = `<span class="label">${labels[idx]}.</span><span class="text">${opt.text}</span>`;
+    btn.addEventListener('click', () => selectAnswer(btn, opt.correct, q.explanation));
+    optionsEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(selectedBtn, isCorrect, exp) {
+  if (locked) return;
+  locked = true;
+  answered += 1;
+  if (isCorrect) score += 1;
+
+  const buttons = Array.from(optionsEl.querySelectorAll('.option'));
+  buttons.forEach(btn => btn.disabled = true);
+
+  const chosenIndex = buttons.indexOf(selectedBtn);
+  const chosenOpt = questions[currentIndex].options[chosenIndex];
+
+  if (isCorrect) {
+    selectedBtn.classList.add('correct');
+    feedback.classList.add('show', 'good');
+    feedbackTitle.textContent = 'Correct.';
+    feedbackText.textContent = 'That choice best fits the troubleshooting scenario.';
+  } else {
+    selectedBtn.classList.add('incorrect');
+    const correctBtn = buttons.find((_, idx) => questions[currentIndex].options[idx].correct);
+    if (correctBtn) correctBtn.classList.add('correct');
+    feedback.classList.add('show', 'bad');
+    feedbackTitle.textContent = 'Not quite.';
+    feedbackText.textContent = 'The selected option is plausible, but it does not best address the requirement in the prompt.';
+  }
+
+  explanation.textContent = exp;
+  scoreText.textContent = `Score: ${score} / ${answered}`;
+  nextBtn.disabled = false;
+  nextBtn.textContent = currentIndex === questions.length - 1 ? 'Finish' : 'Next';
+}
+
+function showResults() {
+  quizCard.style.display = 'none';
+  results.classList.add('show');
+  progressText.textContent = `Question ${questions.length} of ${questions.length}`;
+  progressFill.style.width = '100%';
+  scoreText.textContent = `Score: ${score} / ${questions.length}`;
+  const pct = Math.round((score / questions.length) * 100);
+  finalScore.textContent = `${score} / ${questions.length} (${pct}%)`;
+  let msg = 'Keep drilling the command-line tools and service roles.';
+  if (pct >= 90) msg = 'Strong work. Your tool selection and service mapping look sharp.';
+  else if (pct >= 75) msg = 'Nice job. A little more repetition should lock in the weaker edge cases.';
+  else if (pct >= 60) msg = 'Solid foundation. Focus next on when to choose the right tool first.';
+  finalSummary.textContent = msg;
+}
+
+function nextQuestion() {
+  if (currentIndex < questions.length - 1) {
+    currentIndex += 1;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function restartQuiz() {
+  window.location.reload();
+}
+
+nextBtn.addEventListener('click', nextQuestion);
+restartBtn.addEventListener('click', restartQuiz);
+
+renderQuestion();
+</script>
+</body>
+</html>

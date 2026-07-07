@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CompTIA A+ Core 1 — Storage, Memory & Legacy Cables (Interactive Quiz)</title>
+  <style>
+    :root{--bg:#0f172a;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8;--white:#e6eef8}
+    *{box-sizing:border-box}
+    body{
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;
+      margin:0;
+      background:linear-gradient(180deg,#071024 0%, #081227 50%, #031024 100%);
+      color:var(--white);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px
+    }
+    .wrap{width:100%;max-width:980px}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .logo{
+      width:64px;height:64px;border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),#7c3aed);
+      display:flex;align-items:center;justify-content:center;font-weight:700
+    }
+    h1{font-size:20px;margin:0}
+    p.lead{margin:4px 0 0;color:var(--muted)}
+    .card{
+      background:rgba(255,255,255,0.03);
+      padding:20px;border-radius:12px;
+      box-shadow:0 6px 18px rgba(2,6,23,0.6)
+    }
+    .question{display:flex;flex-direction:column;gap:12px}
+    .qmeta{display:flex;align-items:center;justify-content:space-between}
+    .qnum{font-weight:700;color:var(--accent)}
+    .qtext{font-size:18px}
+    .choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+    .choice{
+      background:#ff9900;color:#000;border:2px solid #000;
+      padding:12px;border-radius:8px;cursor:pointer;
+      transition:all .18s ease;display:flex;align-items:center;gap:10px;
+      box-shadow:0 0 10px #ff9900;
+    }
+    .choice:hover{transform:translateY(-4px);box-shadow:0 6px 18px rgba(2,6,23,0.5)}
+    .choice.selected{
+      background:linear-gradient(90deg, rgba(6,182,212,0.12), rgba(124,58,237,0.06));
+      border-color:rgba(6,182,212,0.24);color:var(--white)
+    }
+    .control{display:flex;align-items:center;gap:12px;margin-top:16px}
+    button{
+      background:#ff9900;color:#000000;font-weight:800;
+      border:3px solid #000;padding:14px 18px;
+      box-shadow:0 0 10px #ff9900;cursor:pointer;border-radius:8px
+    }
+    button.ghost{
+      background:transparent;color:var(--white);
+      border:1px solid rgba(255,255,255,0.06);box-shadow:none;font-weight:500
+    }
+    button:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
+    .progress{height:8px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden;margin-top:10px}
+    .bar{height:100%;background:linear-gradient(90deg,var(--accent),#7c3aed);width:0;transition:width .4s ease}
+    .score-screen{display:none;animation:fadeIn .45s ease both}
+    .review{margin-top:14px}
+    .review-item{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;margin-bottom:8px}
+    .correct{color:#7eedb8;font-weight:700}
+    .incorrect{color:#ff9aa2;font-weight:700}
+    footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;color:var(--muted);font-size:13px}
+    .download{background:transparent;border:1px dashed rgba(255,255,255,0.06);padding:8px 10px;border-radius:9px;cursor:pointer;color:var(--muted)}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    @media (max-width:700px){.choices{grid-template-columns:1fr}.logo{display:none}}
+
+    .feedback{
+      margin-top:10px;
+      font-size:14px;
+      min-height:18px;
+    }
+    .feedback.correct{color:#7eedb8;font-weight:700}
+    .feedback.incorrect{color:#ff9aa2;font-weight:700}
+    details{
+      margin-top:8px;
+      background:rgba(15,23,42,0.7);
+      border-radius:8px;
+      border:1px solid rgba(148,163,184,0.3);
+      padding:6px 10px;
+      font-size:14px;
+    }
+    details summary{
+      cursor:pointer;
+      color:var(--white);
+      outline:none;
+    }
+    details p{
+      margin:6px 0 2px;
+      color:var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">A+</div>
+      <div>
+        <h1>CompTIA A+ Core 1 — Storage, Memory & Legacy Cables</h1>
+        <p class="lead">Interactive 35-question multiple-choice quiz — shuffled answers, instant feedback, and collapsible explanations.</p>
+      </div>
+    </header>
+
+    <main class="card" id="app">
+      <div id="quiz-view">
+        <div class="qmeta">
+          <div class="qnum" id="qnum">Question 1 / 35</div>
+          <div class="qtime" id="qtime"></div>
+        </div>
+        <div class="question">
+          <div class="qtext" id="qtext">Loading...</div>
+          <div class="choices" id="choices"></div>
+          <div class="feedback" id="feedback"></div>
+          <details id="explain">
+            <summary>Show explanation</summary>
+            <p id="explainText"></p>
+          </details>
+        </div>
+
+        <div class="control">
+          <button id="prev" class="ghost">◀ Prev</button>
+          <button id="next">Next ▶</button>
+          <div style="flex:1"></div>
+          <button id="submit">Submit Quiz</button>
+        </div>
+
+        <div class="progress">
+          <div class="bar" id="bar" style="width:0%"></div>
+        </div>
+
+        <footer>
+          <div>Tip: Answers are saved as you go. You can change them anytime before submitting.</div>
+          <div>
+            <button class="download" id="downloadBtn">Download this quiz</button>
+          </div>
+        </footer>
+      </div>
+
+      <div id="score-view" class="score-screen" style="display:none">
+        <h2 id="scoreHeader">Your Score</h2>
+        <p id="scoreText"></p>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button id="retry">Retry Quiz</button>
+          <button id="reviewBtn" class="ghost">Review Answers</button>
+        </div>
+        <div class="review" id="reviewList"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Base questions with explanations
+    const BASE_QUESTIONS = [
+      {q:"Which storage device uses magnetic platters?", choices:["SSD","HDD","NVMe","Flash drive"], answer:1,
+       explanation:"Hard disk drives (HDDs) store data on spinning magnetic platters, unlike SSDs which use flash memory."},
+      {q:"Which storage type has no moving parts?", choices:["HDD","SSD","Tape drive","Optical disc"], answer:1,
+       explanation:"Solid-state drives (SSDs) use flash memory and have no moving parts, improving durability and performance."},
+      {q:"Which interface provides the fastest performance for SSDs?", choices:["SATA","NVMe (PCIe)","IDE","SCSI"], answer:1,
+       explanation:"NVMe over PCIe offers much higher throughput and lower latency than SATA-based SSDs."},
+      {q:"Which optical disc holds the largest capacity?", choices:["CD","DVD","Blu-ray","CD-RW"], answer:2,
+       explanation:"Blu-ray discs support significantly higher capacities than CDs or DVDs, making them ideal for HD content."},
+      {q:"Which RAID level provides mirroring?", choices:["RAID 0","RAID 1","RAID 5","RAID 10"], answer:1,
+       explanation:"RAID 1 mirrors data across two or more drives, providing redundancy if one drive fails."},
+      {q:"Which RAID level provides striping with parity?", choices:["RAID 0","RAID 1","RAID 5","RAID 6"], answer:2,
+       explanation:"RAID 5 stripes data with distributed parity, allowing recovery from a single drive failure."},
+      {q:"Which storage device is sequential access only?", choices:["HDD","SSD","Tape drive","Blu-ray"], answer:2,
+       explanation:"Tape drives are sequential access devices, meaning data must be read in order along the tape."},
+      {q:"Which connector is used for external SATA drives?", choices:["eSATA","USB-C","FireWire","Thunderbolt"], answer:0,
+       explanation:"eSATA is the external version of SATA, designed specifically for external SATA storage devices."},
+      {q:"Which storage type is most common in enterprise servers for speed?", choices:["NVMe SSD","Tape drive","Optical disc","Floppy disk"], answer:0,
+       explanation:"NVMe SSDs provide very high I/O performance and are widely used in modern enterprise servers."},
+      {q:"Which storage device uses laser technology?", choices:["HDD","SSD","Optical disc","Tape drive"], answer:2,
+       explanation:"Optical discs such as CDs, DVDs, and Blu-ray use lasers to read and write data."},
+
+      {q:"Which type of memory is volatile?", choices:["ROM","RAM","Flash","SSD"], answer:1,
+       explanation:"RAM is volatile memory, meaning its contents are lost when power is removed."},
+      {q:"Which memory type is used for BIOS firmware?", choices:["DRAM","SRAM","ROM/Flash","DDR"], answer:2,
+       explanation:"BIOS/UEFI firmware is stored in non-volatile ROM or flash memory so it persists without power."},
+      {q:"Which memory type is faster but more expensive?", choices:["DRAM","SRAM","DDR","VRAM"], answer:1,
+       explanation:"SRAM is faster and more expensive than DRAM and is commonly used for cache memory."},
+      {q:"Which DDR version has the highest transfer rate?", choices:["DDR2","DDR3","DDR4","DDR5"], answer:3,
+       explanation:"DDR5 is the latest generation in the list and offers the highest transfer rates."},
+      {q:"Which memory type is used in graphics cards?", choices:["VRAM","DRAM","SRAM","ROM"], answer:0,
+       explanation:"Graphics cards use specialized video RAM (VRAM) optimized for high-bandwidth graphics operations."},
+      {q:"Which memory type requires refresh cycles?", choices:["SRAM","DRAM","ROM","Flash"], answer:1,
+       explanation:"DRAM cells must be periodically refreshed to maintain their stored bits, unlike SRAM."},
+      {q:"Which memory type is non-volatile?", choices:["DRAM","SRAM","ROM","DDR"], answer:2,
+       explanation:"ROM is non-volatile, retaining its contents even when power is removed."},
+      {q:"Which memory module is used in laptops?", choices:["DIMM","SODIMM","SIMM","VRAM"], answer:1,
+       explanation:"Laptops typically use smaller SODIMM modules due to space constraints."},
+      {q:"Which memory type is used for cache?", choices:["DRAM","SRAM","ROM","Flash"], answer:1,
+       explanation:"CPU cache is built from SRAM because of its very low latency and high speed."},
+      {q:"Which memory type is embedded in CPUs for speed?", choices:["L1/L2 Cache (SRAM)","DRAM","ROM","Flash"], answer:0,
+       explanation:"L1 and L2 caches are SRAM-based and integrated into the CPU for extremely fast access."},
+
+      {q:"Which connector was used for older hard drives before SATA?", choices:["IDE/PATA","SCSI","USB","NVMe"], answer:0,
+       explanation:"IDE/PATA ribbon cables were used for older parallel ATA hard drives before SATA became standard."},
+      {q:"Which connector was used for older printers?", choices:["Parallel (DB-25)","Serial (DB-9)","USB","RJ-45"], answer:0,
+       explanation:"Legacy printers often used a DB-25 parallel port connection."},
+      {q:"Which connector was used for older mice/keyboards?", choices:["PS/2","USB","Serial","RJ-11"], answer:0,
+       explanation:"PS/2 round connectors were commonly used for older mice and keyboards."},
+      {q:"Which connector was used for dial-up modems?", choices:["RJ-45","RJ-11","USB","Coax"], answer:1,
+       explanation:"Dial-up modems used RJ-11 telephone connectors for analog phone lines."},
+      {q:"Which connector was used for older SCSI devices?", choices:["50-pin Centronics","SATA","USB-C","HDMI"], answer:0,
+       explanation:"Older SCSI devices often used 50-pin Centronics-style connectors."},
+      {q:"Which connector was used for older VGA monitors?", choices:["DB-15","HDMI","DisplayPort","DVI"], answer:0,
+       explanation:"VGA monitors used a 15-pin D-sub (DB-15) connector for analog video."},
+      {q:"Which connector was used for older audio devices?", choices:["3.5mm TRS","RCA","Optical TOSLINK","USB"], answer:1,
+       explanation:"RCA connectors were widely used for analog audio and composite video connections."},
+      {q:"Which connector was used for older serial communication?", choices:["DB-9","DB-25","RJ-45","USB"], answer:0,
+       explanation:"DB-9 connectors were common for RS-232 serial communication on PCs."},
+      {q:"Which connector was used for older floppy drives?", choices:["34-pin ribbon cable","SATA","USB","RJ-11"], answer:0,
+       explanation:"Floppy drives used a 34-pin ribbon cable for data connection."},
+      {q:"Which connector was used for older parallel ATA drives?", choices:["40-pin ribbon cable","SATA","USB","RJ-45"], answer:0,
+       explanation:"Parallel ATA (PATA) hard drives used a 40-pin ribbon cable."},
+      {q:"Which connector was used for older coaxial networking?", choices:["BNC","RJ-45","RJ-11","USB"], answer:0,
+       explanation:"10BASE2 and similar coaxial Ethernet used BNC connectors."},
+      {q:"Which connector was used for older Apple devices?", choices:["FireWire (IEEE 1394)","USB-C","Lightning","Thunderbolt"], answer:0,
+       explanation:"FireWire (IEEE 1394) was widely used on older Apple systems for high-speed peripherals."},
+      {q:"Which connector was used for older game controllers?", choices:["DA-15 (Game port)","USB","RJ-45","PS/2"], answer:0,
+       explanation:"Legacy game controllers often used a 15-pin DA-15 game port on sound cards."},
+      {q:"Which connector was used for older networking hubs?", choices:["RJ-45","BNC","RJ-11","USB"], answer:0,
+       explanation:"Older Ethernet hubs typically used RJ-45 connectors for twisted-pair cabling."},
+      {q:"Which connector was used for older TV connections?", choices:["Coaxial (F-type)","HDMI","RCA","DisplayPort"], answer:0,
+       explanation:"Traditional TV connections commonly used F-type coaxial connectors for antenna or cable input."}
+    ];
+
+    // Shuffle helper
+    function shuffleArray(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
+    }
+
+    // Build quiz questions with shuffled order and shuffled answers
+    let quizQuestions = shuffleArray(BASE_QUESTIONS).map(q => {
+      const order = shuffleArray([0,1,2,3]); // display order of choices
+      const correctDisplayIndex = order.indexOf(q.answer);
+      return {
+        ...q,
+        order,
+        correct: correctDisplayIndex
+      };
+    });
+
+    const total = quizQuestions.length;
+    let idx = 0;
+    const answers = new Array(total).fill(null);
+    const startTime = Date.now();
+
+    // DOM refs
+    const qnumEl = document.getElementById('qnum');
+    const qtextEl = document.getElementById('qtext');
+    const choicesEl = document.getElementById('choices');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    const submitBtn = document.getElementById('submit');
+    const barEl = document.getElementById('bar');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const feedbackEl = document.getElementById('feedback');
+    const explainDetails = document.getElementById('explain');
+    const explainText = document.getElementById('explainText');
+
+    function renderQuestion(i){
+      const Q = quizQuestions[i];
+      qnumEl.textContent = `Question ${i+1} / ${total}`;
+      qtextEl.textContent = Q.q;
+      choicesEl.innerHTML = '';
+      feedbackEl.textContent = '';
+      feedbackEl.classList.remove('correct','incorrect');
+      explainDetails.open = false;
+      explainText.textContent = Q.explanation;
+
+      const letters = ['A','B','C','D'];
+
+      Q.order.forEach((origIdx, displayIdx) => {
+        const text = Q.choices[origIdx];
+        const btn = document.createElement('button');
+        btn.className = 'choice';
+        btn.setAttribute('data-choice', displayIdx);
+        btn.innerHTML = `<strong>${letters[displayIdx]}.</strong> <span style="flex:1;text-align:left;">${text}</span>`;
+        if(answers[i] === displayIdx){
+          btn.classList.add('selected');
+        }
+        btn.addEventListener('click', () => {
+          answers[i] = displayIdx;
+          document.querySelectorAll('.choice').forEach(el => el.classList.remove('selected'));
+          btn.classList.add('selected');
+          showFeedback(i);
+        });
+        choicesEl.appendChild(btn);
+      });
+
+      const pct = Math.round((i/total)*100);
+      barEl.style.width = pct + '%';
+      prevBtn.disabled = i === 0;
+      nextBtn.disabled = i === total-1;
+    }
+
+    function showFeedback(i){
+      const Q = quizQuestions[i];
+      const selected = answers[i];
+      if(selected === null) return;
+
+      if(selected === Q.correct){
+        feedbackEl.textContent = "Correct!";
+        feedbackEl.classList.remove('incorrect');
+        feedbackEl.classList.add('correct');
+      } else {
+        const letters = ['A','B','C','D'];
+        const correctText = Q.choices[Q.order[Q.correct]];
+        feedbackEl.textContent = `Incorrect. Correct answer: ${letters[Q.correct]}. ${correctText}`;
+        feedbackEl.classList.remove('correct');
+        feedbackEl.classList.add('incorrect');
+      }
+      explainDetails.open = true;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if(idx > 0){
+        idx--;
+        renderQuestion(idx);
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if(idx < total-1){
+        idx++;
+        renderQuestion(idx);
+      }
+    });
+
+    submitBtn.addEventListener('click', () => {
+      const answeredCount = answers.filter(a => a !== null).length;
+      if(answeredCount < total){
+        if(!confirm(`You answered ${answeredCount}/${total}. Submit anyway?`)) return;
+      }
+      gradeQuiz();
+    });
+
+    function gradeQuiz(){
+      let correct = 0;
+      const results = [];
+      quizQuestions.forEach((Q, i) => {
+        const got = answers[i];
+        const ok = got === Q.correct;
+        if(ok) correct++;
+        const displayChoices = Q.order.map(idx => Q.choices[idx]);
+        results.push({
+          q: Q.q,
+          choices: displayChoices,
+          correct: Q.correct,
+          got: got
+        });
+      });
+      showScore(correct, results);
+    }
+
+    function showScore(correct, results){
+      document.getElementById('quiz-view').style.display = 'none';
+      const scoreView = document.getElementById('score-view');
+      scoreView.style.display = 'block';
+      const pct = Math.round((correct/total)*100);
+      document.getElementById('scoreHeader').textContent = `You scored ${correct}/${total} (${pct}%)`;
+      document.getElementById('scoreText').innerHTML =
+        `Started: ${new Date(startTime).toLocaleString()} &middot; Completed: ${new Date().toLocaleString()}`;
+
+      const reviewList = document.getElementById('reviewList');
+      reviewList.innerHTML = '';
+      const letters = ['A','B','C','D'];
+
+      results.forEach((r, i) => {
+        const el = document.createElement('div');
+        el.className = 'review-item';
+
+        const gotLabel = r.got === null
+          ? '<em>Unanswered</em>'
+          : `<strong>${letters[r.got]}</strong> ${r.choices[r.got]}`;
+        const correctLabel = `<strong>${letters[r.correct]}</strong> ${r.choices[r.correct]}`;
+
+        const header = document.createElement('div');
+        header.style.display = 'flex';
+        header.style.justifyContent = 'space-between';
+        header.style.alignItems = 'center';
+
+        const qn = document.createElement('div');
+        qn.innerHTML = `<div style="font-weight:700;">Q${i+1}.</div><div style="margin-top:6px">${r.q}</div>`;
+
+        const mark = document.createElement('div');
+        if(r.got === r.correct){
+          mark.innerHTML = '<span class="correct">Correct</span>';
+        } else {
+          mark.innerHTML = '<span class="incorrect">Incorrect</span>';
+        }
+
+        header.appendChild(qn);
+        header.appendChild(mark);
+
+        const body = document.createElement('div');
+        body.style.marginTop = '8px';
+        body.innerHTML =
+          `<div style="font-size:14px;color:var(--muted)">Your answer: ${gotLabel}</div>` +
+          `<div style="font-size:14px;color:var(--muted);margin-top:6px">Correct answer: ${correctLabel}</div>`;
+
+        el.appendChild(header);
+        el.appendChild(body);
+        reviewList.appendChild(el);
+      });
+
+      confettiBurst();
+    }
+
+    function confettiBurst(){
+      const N = 20;
+      const container = document.body;
+      for(let i=0;i<N;i++){
+        const p = document.createElement('div');
+        p.style.position='fixed';
+        p.style.width='8px';
+        p.style.height='8px';
+        p.style.borderRadius='2px';
+        p.style.left = (50 + (Math.random()*40-20)) + '%';
+        p.style.top = (30 + Math.random()*40) + '%';
+        p.style.background = `hsl(${Math.floor(Math.random()*360)} 80% 60%)`;
+        p.style.opacity='0.95';
+        p.style.zIndex=9999;
+        p.style.pointerEvents='none';
+        container.appendChild(p);
+        const dx = (Math.random()*600-300);
+        const dy = (Math.random()*400-200);
+        const rot = (Math.random()*720-360);
+        p.animate([
+          {transform:`translateY(0) rotate(0)`, opacity:1},
+          {transform:`translate(${dx}px, ${dy}px) rotate(${rot}deg) scale(0.6)`, opacity:0}
+        ], {duration:1200 + Math.random()*800, easing:'cubic-bezier(.2,.9,.3,1)'}).onfinish = () => p.remove();
+      }
+    }
+
+    document.getElementById('retry').addEventListener('click', () => {
+      for(let i=0;i<answers.length;i++) answers[i] = null;
+      // reshuffle questions and answers on retry
+      quizQuestions = shuffleArray(BASE_QUESTIONS).map(q => {
+        const order = shuffleArray([0,1,2,3]);
+        const correctDisplayIndex = order.indexOf(q.answer);
+        return {
+          ...q,
+          order,
+          correct: correctDisplayIndex
+        };
+      });
+      idx = 0;
+      document.getElementById('score-view').style.display = 'none';
+      document.getElementById('quiz-view').style.display = 'block';
+      barEl.style.width = '0%';
+      renderQuestion(0);
+    });
+
+    document.getElementById('reviewBtn').addEventListener('click', () => {
+      document.getElementById('score-view').scrollIntoView({behavior:'smooth'});
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const filename = 'CompTIA_Aplus_Core1_Storage_Memory_Legacy_Quiz_Shuffled.html';
+      const html = '<!doctype html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([html], {type: 'text/html'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowRight') nextBtn.click();
+      if(e.key === 'ArrowLeft') prevBtn.click();
+      if(e.key >= '1' && e.key <= '4'){
+        const idxChoice = Number(e.key) - 1;
+        const currentButtons = document.querySelectorAll('.choice');
+        if(currentButtons[idxChoice]) currentButtons[idxChoice].click();
+      }
+    });
+
+    // Initial render
+    renderQuestion(0);
+    barEl.style.width = '0%';
+  </script>
+</body>
+</html>

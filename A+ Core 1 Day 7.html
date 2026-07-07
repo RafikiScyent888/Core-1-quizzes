@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Day 7 Quiz – Protocols, IP Addressing & Networking</title>
+<style>
+:root {
+  --bg:#0b1020; --card:#10182b; --card2:#16213a; --text:#f8fafc; --muted:#b6c2d9;
+  --accent:#7dd3fc; --accent2:#2563eb; --good:#123c25; --bad:#4b1d24; --border:#26324d;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; font-family:Arial,Helvetica,sans-serif; color:var(--text);
+  background:linear-gradient(180deg,#0b1020 0%,#0f172a 100%);
+}
+.wrap { max-width:980px; margin:0 auto; padding:28px 18px 42px; }
+h1 { margin:0 0 8px; font-size:28px; line-height:1.2; }
+.sub { color:var(--muted); margin:0 0 18px; line-height:1.55; }
+.hud { display:grid; grid-template-columns:1fr auto; gap:14px; align-items:center; margin-bottom:18px; }
+.progress-shell { background:#0f172a; border:1px solid var(--border); border-radius:999px; height:14px; overflow:hidden; }
+.progress-bar { height:100%; width:0%; background:linear-gradient(90deg,#38bdf8,#2563eb); transition:width .25s ease; }
+.score { font-weight:700; white-space:nowrap; }
+.card {
+  background:rgba(16,24,43,.96); border:1px solid var(--border); border-radius:22px; padding:22px;
+  box-shadow:0 20px 50px rgba(0,0,0,.24);
+}
+.q-meta { color:var(--accent); font-size:14px; font-weight:700; letter-spacing:.02em; margin-bottom:10px; }
+.question-text { font-size:23px; line-height:1.45; margin-bottom:18px; color:var(--text); }
+.answers { display:grid; gap:12px; }
+.answer {
+  width:100%; text-align:left; background:var(--card2); color:#fff; border:1px solid var(--border);
+  border-radius:18px; padding:14px 16px; cursor:pointer; transition:transform .08s ease,border-color .12s ease,background .12s ease;
+  min-height:72px; display:grid; grid-template-columns:32px 1fr; gap:12px; align-items:start;
+}
+.answer:hover { border-color:#4d648f; transform:translateY(-1px); }
+.answer:disabled { cursor:default; opacity:1; }
+.answer.correct { background:var(--good); border-color:#1f8a4c; }
+.answer.wrong { background:var(--bad); border-color:#a63a46; }
+.opt-label { font-weight:800; color:#fff; line-height:1.5; }
+.opt-text {
+  color:#fff; font-family:"Consolas","Courier New",monospace; white-space:pre-wrap;
+  line-height:1.5; font-size:15px; min-height:1.5em;
+}
+.feedback {
+  margin-top:16px; padding:12px 14px; border-radius:14px; display:none; line-height:1.5; font-weight:700;
+}
+.feedback.good { display:block; background:rgba(20,83,45,.35); color:#bbf7d0; border:1px solid #1f8a4c; }
+.feedback.bad { display:block; background:rgba(127,29,29,.35); color:#fecaca; border:1px solid #a63a46; }
+details { margin-top:14px; border:1px solid var(--border); border-radius:14px; background:rgba(22,33,58,.6); }
+summary { cursor:pointer; padding:12px 14px; font-weight:700; color:#dbeafe; }
+details > div { padding:0 14px 14px; color:var(--muted); line-height:1.6; }
+.controls { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+button.ctrl { border:none; border-radius:14px; padding:11px 16px; cursor:pointer; font-weight:700; background:#334155; color:#fff; }
+button.primary { background:var(--accent2); }
+button.ctrl:disabled { opacity:.55; cursor:default; }
+.footer-note { margin-top:14px; color:var(--muted); font-size:13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Day 7 Quiz – Protocols, IP Addressing & Networking</h1>
+  <p class="sub">Single-question Exam Mode with per-load shuffling, collapsible explanations, progress tracking, and your hardened equal-length option rendering.</p>
+
+  <div class="hud">
+    <div class="progress-shell"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="score" id="scoreBox">Score: 0 / 0</div>
+  </div>
+
+  <div class="card">
+    <div class="q-meta" id="qMeta">Question 1 of 30</div>
+    <div class="question-text" id="questionText"></div>
+    <div class="answers" id="answers"></div>
+    <div class="feedback" id="feedback"></div>
+
+    <details id="explainBox">
+      <summary>Show explanation</summary>
+      <div id="explainText"></div>
+    </details>
+
+    <div class="controls">
+      <button class="ctrl primary" id="nextBtn" disabled>Next</button>
+      <button class="ctrl" id="restartBtn">Restart Quiz</button>
+      <button class="ctrl" id="downloadBtn">Download HTML</button>
+    </div>
+
+    <div class="footer-note">Options use monospace rendering with NBSP-only visual equalization. The period stays attached to the sentence instead of floating after the padding.</div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [{"q": "A technician needs to verify that a workstation NIC can transmit and receive frames without relying on the live network infrastructure. Which tool should be used?", "choices": ["Loopback plug.", "Cable certifier.", "Tone and probe set.", "Patch-panel punch tool."], "a": 0, "explain": "A loopback plug reflects the signal back to the NIC so the adapter can be tested without depending on the rest of the network."}, {"q": "A user can browse to a website by typing its IP address, but typing the domain name fails. Which protocol and port should the technician check first?", "choices": ["DNS over UDP 53.", "DNS over TCP 53.", "HTTPS over TCP 443.", "DHCP over UDP 67."], "a": 0, "explain": "If IP-based access works but name-based access fails, the immediate suspect is DNS resolution on UDP port 53."}, {"q": "A workstation has been given a static IP address and subnet mask, but it still cannot communicate with devices on remote networks. Which setting is most likely missing?", "choices": ["Default gateway.", "DNS server.", "Preferred hostname.", "Alternate IP config."], "a": 0, "explain": "The default gateway provides the route for traffic that must leave the local subnet."}, {"q": "A technician must allow encrypted web browsing through a firewall. Which protocol and port combination should be permitted?", "choices": ["HTTPS over TCP 443.", "HTTP over TCP 80.", "SSH over TCP 22.", "FTPS over TCP 990."], "a": 0, "explain": "HTTPS uses TCP 443 for encrypted web traffic."}, {"q": "A small business already has coaxial cabling installed and wants relatively fast, low-latency internet for video meetings and cloud services. Which connection type is the best fit?", "choices": ["Cable internet.", "Fiber internet.", "Fixed wireless.", "DSL service."], "a": 0, "explain": "Cable internet uses coaxial infrastructure and generally provides better speed and latency than typical DSL or satellite alternatives."}, {"q": "A company wants a separate network designed specifically for high-speed access between servers and shared storage arrays. Which network type matches that requirement?", "choices": ["SAN.", "NAS.", "WLAN.", "WAN."], "a": 0, "explain": "A SAN, or Storage Area Network, is built to provide dedicated high-speed access to storage resources."}, {"q": "A technician is terminating horizontal cabling into a patch panel and must seat each conductor into the insulation displacement contacts. Which tool is appropriate?", "choices": ["Punchdown tool.", "RJ-45 crimper.", "Cable jacket stripper.", "Tone generator probe."], "a": 0, "explain": "A punchdown tool is used to terminate twisted-pair conductors into patch panels and keystone jacks."}, {"q": "A workstation can reach local devices by IP address but cannot reach websites by name. Which setting should the technician verify first on that workstation?", "choices": ["DNS server address.", "Default gateway.", "Subnet mask value.", "Proxy bypass list."], "a": 0, "explain": "Domain-name failures with otherwise working local connectivity usually point to a DNS configuration issue."}, {"q": "A small office needs wireless coverage throughout one building while still using a wired backbone for switches and printers. Which network type is being implemented?", "choices": ["WLAN.", "LAN.", "CAN.", "MAN."], "a": 0, "explain": "A WLAN is a wireless local area network used for in-building Wi-Fi connectivity."}, {"q": "A technician must allow secure remote access to a Windows server's graphical desktop. Which protocol and port should the firewall allow?", "choices": ["RDP over TCP 3389.", "VNC over TCP 5900.", "SSH over TCP 22.", "SMB over TCP 445."], "a": 0, "explain": "Microsoft Remote Desktop Protocol uses TCP port 3389."}, {"q": "Before terminating Ethernet cable, a technician needs to remove the jacket without nicking the internal conductors. Which tool should be used?", "choices": ["Cable stripper.", "RJ-45 crimper.", "Punchdown tool.", "Cable certifier."], "a": 0, "explain": "A cable stripper is designed to remove the outer jacket while minimizing the chance of damaging internal wires."}, {"q": "A user wants a short-range network connecting a phone, smartwatch, and wireless earbuds. Which type of network best describes that setup?", "choices": ["PAN.", "WLAN.", "LAN.", "MAN."], "a": 0, "explain": "A Personal Area Network is intended for very short-range connections around one user."}, {"q": "Which address range is reserved for private IPv4 addressing and is valid for use inside a home or office network?", "choices": ["192.168.0.0 through 192.168.255.255.", "172.32.0.0 through 172.63.255.255.", "169.254.0.0 through 169.254.255.255.", "198.18.0.0 through 198.19.255.255."], "a": 0, "explain": "The 192.168.0.0/16 range is one of the RFC 1918 private IPv4 address spaces."}, {"q": "A rural home has no cable or fiber provider available, and the owner only needs general connectivity rather than low-latency gaming. Which connection type is the most realistic recommendation?", "choices": ["Satellite internet.", "Fixed wireless broadband.", "Cellular hotspot service.", "DSL over copper."], "a": 0, "explain": "Satellite internet is commonly used where terrestrial broadband is unavailable, though its latency is higher."}, {"q": "A user can send email successfully but cannot retrieve messages to a client that downloads mail locally. Which protocol and port should the technician check first?", "choices": ["POP3 over TCP 110.", "IMAP over TCP 143.", "SMTP over TCP 25.", "SMTPS over TCP 465."], "a": 0, "explain": "POP3 is used for email retrieval and commonly operates over TCP port 110."}, {"q": "A company wants to connect multiple branch offices in different cities under one corporate network. Which network type describes that design?", "choices": ["WAN.", "MAN.", "CAN.", "LAN."], "a": 0, "explain": "A Wide Area Network connects geographically separated locations."}, {"q": "A technician wants to identify signal strength, nearby SSIDs, and channel congestion before adjusting office Wi-Fi settings. Which tool is the best choice?", "choices": ["Wi-Fi analyzer.", "Spectrum analyzer.", "Cable certifier.", "Tone and probe kit."], "a": 0, "explain": "A Wi-Fi analyzer reveals wireless channel usage, signal levels, and overlapping networks."}, {"q": "A small office wants devices to receive IP addresses automatically rather than assigning them by hand. Which configuration service should be used?", "choices": ["DHCP.", "APIPA.", "DNS.", "NAT."], "a": 0, "explain": "DHCP automatically leases IP addresses and related network settings to clients."}, {"q": "A technician needs to securely transfer files to a Linux server while also allowing encrypted remote management. Which protocol best fits that requirement?", "choices": ["SFTP over SSH.", "SCP over SSH.", "FTPS over TLS.", "SMB with signing."], "a": 0, "explain": "SFTP runs over SSH and provides encrypted file transfer together with secure remote administration."}, {"q": "A workstation is set to obtain an IP address automatically but instead assigns itself 169.254.42.18. What does that indicate?", "choices": ["The system could not reach a DHCP server.", "The workstation received a loopback address.", "The subnet mask was manually cleared.", "The NIC joined an IPv6-only segment."], "a": 0, "explain": "An APIPA address in the 169.254.0.0/16 range indicates DHCP failed and the client self-assigned an address."}, {"q": "Which device primarily forwards traffic between hosts on the same LAN by using destination MAC addresses?", "choices": ["Switch.", "Bridge router.", "Wireless router.", "Access point."], "a": 0, "explain": "A switch forwards Ethernet frames within a LAN using MAC address tables."}, {"q": "A laptop connects to the office Wi-Fi but reports strong signal and no internet access. Other users are online. Which configuration item should the technician verify first if the laptop also has an APIPA address?", "choices": ["DHCP communication.", "Default gateway entry.", "DNS suffix search.", "Proxy auto-config."], "a": 0, "explain": "If the device has an APIPA address, the immediate concern is whether it can obtain a lease from DHCP."}, {"q": "A technician wants to identify the path packets take to a remote host and where latency begins to increase. Which utility is most appropriate?", "choices": ["tracert.", "pathping.", "ping.", "netstat."], "a": 0, "explain": "tracert shows the hop-by-hop path to a destination and is the standard first check for where delay begins."}, {"q": "Which DNS record type is used to map a hostname directly to an IPv4 address?", "choices": ["A record.", "AAAA record.", "CNAME record.", "PTR record."], "a": 0, "explain": "An A record maps a host name to an IPv4 address."}, {"q": "A technician must connect a copper Ethernet device to a fiber backbone without replacing the endpoint NIC. Which hardware should be used?", "choices": ["Media converter.", "SFP transceiver.", "PoE injector.", "Managed bridge."], "a": 0, "explain": "A media converter changes one network media type, such as copper, to another, such as fiber."}, {"q": "Which DHCP sequence correctly describes the process a client uses to obtain an IP lease from a server?", "choices": ["Discover, Offer, Request, Acknowledge.", "Discover, Request, Offer, Renew.", "Request, Offer, Confirm, Acknowledge.", "Acknowledge, Discover, Offer, Request."], "a": 0, "explain": "DORA stands for Discover, Offer, Request, and Acknowledge."}, {"q": "A user can browse the web securely and retrieve email, but cannot send mail from a client application. Which protocol and port should be reviewed first?", "choices": ["SMTP over TCP 25.", "SMTPS over TCP 465.", "POP3 over TCP 110.", "IMAP over TCP 143."], "a": 0, "explain": "SMTP is the protocol used for sending mail, commonly associated with TCP port 25 in foundational networking questions."}, {"q": "A technician is comparing twisted-pair cable categories for a new office and wants a common choice for reliable 10 Gigabit Ethernet over typical structured cabling distances. Which category fits best?", "choices": ["Cat6a.", "Cat6.", "Cat5e.", "Cat8."], "a": 0, "explain": "Cat6a is a common choice for 10 GbE over standard horizontal run distances."}, {"q": "Which wireless standard is commonly associated with Wi-Fi 6 and improved efficiency in dense environments?", "choices": ["802.11ax.", "802.11ac.", "802.11n.", "802.11g."], "a": 0, "explain": "802.11ax is Wi-Fi 6 and improves throughput and efficiency, especially in crowded deployments."}, {"q": "A network printer is manually configured with the wrong subnet mask. Which symptom is the most likely result?", "choices": ["Communication problems with some hosts despite a valid local IP.", "The printer can reach local hosts but not the default gateway.", "The printer receives duplicate DNS responses during lookups.", "The printer renews its DHCP lease at every reboot."], "a": 0, "explain": "An incorrect subnet mask can make a device misidentify which destinations are local versus remote, causing communication failures."}];
+const LETTERS = ["A","B","C","D"];
+let quiz = [];
+let current = 0;
+let score = 0;
+let answered = false;
+
+function clone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function shuffle(array) {
+  const arr = array.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function buildQuiz() {
+  quiz = shuffle(clone(QUESTIONS)).map(q => {
+    const answers = q.choices.map((text, idx) => ({ text, idx }));
+    const shuffled = shuffle(answers);
+    return {
+      q: q.q,
+      explain: q.explain,
+      correctIndex: q.a,
+      answers: shuffled,
+      chosen: null
+    };
+  });
+  current = 0;
+  score = 0;
+  answered = false;
+}
+
+function padChoices(choiceTexts) {
+  const normalized = choiceTexts.map(t => t.replace(/\u00a0/g, " ").trimEnd());
+  const maxLen = Math.max(...normalized.map(t => t.length));
+  return normalized.map(t => {
+    const diff = maxLen - t.length;
+    return t + "&nbsp;".repeat(diff > 0 ? diff : 0);
+  });
+}
+
+function render() {
+  const item = quiz[current];
+  const questionText = document.getElementById("questionText");
+  const answersBox = document.getElementById("answers");
+  const feedback = document.getElementById("feedback");
+  const explainBox = document.getElementById("explainBox");
+  const explainText = document.getElementById("explainText");
+  const nextBtn = document.getElementById("nextBtn");
+
+  document.getElementById("qMeta").textContent = `Question ${current + 1} of ${quiz.length}`;
+  questionText.textContent = item.q;
+  answersBox.innerHTML = "";
+  feedback.className = "feedback";
+  feedback.textContent = "";
+  explainBox.open = false;
+  explainText.textContent = "Explanation: " + item.explain;
+  nextBtn.disabled = true;
+  answered = item.chosen !== null;
+
+  const padded = padChoices(item.answers.map(a => a.text));
+
+  item.answers.forEach((ans, pos) => {
+    const btn = document.createElement("button");
+    btn.className = "answer";
+    btn.type = "button";
+    btn.innerHTML = `<span class="opt-label">${LETTERS[pos]}.</span><span class="opt-text">${padded[pos]}</span>`;
+    if (item.chosen !== null) {
+      btn.disabled = true;
+      if (ans.idx === item.correctIndex) btn.classList.add("correct");
+      if (item.chosen === pos && ans.idx !== item.correctIndex) btn.classList.add("wrong");
+    }
+    btn.addEventListener("click", () => handleAnswer(pos));
+    answersBox.appendChild(btn);
+  });
+
+  if (item.chosen !== null) {
+    const chosenAns = item.answers[item.chosen];
+    if (chosenAns.idx === item.correctIndex) {
+      feedback.className = "feedback good";
+      feedback.textContent = `Correct — ${LETTERS[item.chosen]} is the best answer.`;
+    } else {
+      const correctPos = item.answers.findIndex(a => a.idx === item.correctIndex);
+      feedback.className = "feedback bad";
+      feedback.textContent = `Incorrect — the best answer is ${LETTERS[correctPos]}.`;
+    }
+    explainBox.open = true;
+    nextBtn.disabled = false;
+  }
+
+  updateHud();
+}
+
+function handleAnswer(pos) {
+  if (answered) return;
+  answered = true;
+  const item = quiz[current];
+  item.chosen = pos;
+  if (item.answers[pos].idx === item.correctIndex) score++;
+  render();
+}
+
+function updateHud() {
+  const completed = quiz.filter(q => q.chosen !== null).length;
+  document.getElementById("scoreBox").textContent = `Score: ${score} / ${completed}`;
+  document.getElementById("progressBar").style.width = `${(current / quiz.length) * 100}%`;
+}
+
+document.getElementById("nextBtn").addEventListener("click", () => {
+  if (current < quiz.length - 1) {
+    current++;
+    render();
+  } else {
+    document.getElementById("qMeta").textContent = "Quiz complete";
+    document.getElementById("questionText").textContent = `Final score: ${score} / ${quiz.length}`;
+    document.getElementById("answers").innerHTML = "";
+    document.getElementById("feedback").className = "feedback good";
+    document.getElementById("feedback").textContent = "Nice work — restart to reshuffle the full exam.";
+    document.getElementById("explainText").textContent = "Explanation: Each restart reshuffles both question order and answer order.";
+    document.getElementById("explainBox").open = true;
+    document.getElementById("nextBtn").disabled = true;
+    document.getElementById("progressBar").style.width = "100%";
+    document.getElementById("scoreBox").textContent = `Score: ${score} / ${quiz.length}`;
+  }
+});
+
+document.getElementById("restartBtn").addEventListener("click", () => {
+  buildQuiz();
+  render();
+});
+
+document.getElementById("downloadBtn").addEventListener("click", () => {
+  const blob = new Blob([document.documentElement.outerHTML], { type: "text/html" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "Day7_Protocols_Networking_Hardened_30Q.html";
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 500);
+});
+
+buildQuiz();
+render();
+</script>
+</body>
+</html>

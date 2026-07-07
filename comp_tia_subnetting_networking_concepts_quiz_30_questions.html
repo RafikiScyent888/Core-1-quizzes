@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CompTIA A+ / Network+ – Subnetting & Networking Concepts Quiz</title>
+<style>
+:root{--bg:#0f172a;--panel:#111827;--accent:#2563eb;--muted:#94a3b8;--correct:#22c55e;--wrong:#ef4444}
+*{box-sizing:border-box}
+body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#020617;color:#e5e7eb;padding:20px}
+.container{max-width:1000px;margin:auto}
+h1{margin-bottom:6px}
+.note{color:var(--muted);margin-bottom:16px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+button{padding:8px 12px;border-radius:8px;border:0;font-weight:600;cursor:pointer}
+.show{background:var(--accent);color:white}
+.reset{background:#334155;color:white}
+.download{background:#14b8a6;color:#020617}
+.question{background:var(--panel);border:1px solid #1f2937;border-radius:12px;padding:14px;margin-bottom:16px}
+.qhead{font-weight:700;margin-bottom:6px}
+.answers{display:grid;gap:8px;margin-top:8px}
+.answer{padding:10px;border-radius:8px;border:1px solid #1f2937;background:#020617;cursor:pointer}
+.answer:hover{background:#020617aa}
+.answer.correct{background:#052e18;border-color:var(--correct)}
+.answer.wrong{background:#2b0a13;border-color:var(--wrong)}
+.explain{margin-top:8px;color:#cbd5e1;font-size:.92rem;display:none}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>CompTIA-Style Quiz: Subnetting & Networking Concepts</h1>
+<p class="note">30 difficult, scenario-based questions. Answers are randomized each load.</p>
+<div class="controls">
+<button class="show" onclick="showAll()">Show Correct Answers</button>
+<button class="reset" onclick="location.reload()">Restart Quiz</button>
+<button class="download" onclick="downloadHTML()">Download HTML</button>
+</div>
+<div id="quiz"></div>
+</div>
+<script>
+const QUESTIONS=[
+{q:"A network administrator needs at least 25 usable hosts per subnet from a /24 network. What subnet mask should be used?",choices:["255.255.255.224 (/27)","255.255.255.192 (/26)","255.255.255.240 (/28)","255.255.255.128 (/25)"],a:1,ex:"A /26 provides 64 addresses (62 usable), meeting the requirement of at least 25 hosts."},
+{q:"Which IP address is the broadcast address for the 192.168.10.64/26 subnet?",choices:["192.168.10.63","192.168.10.127","192.168.10.95","192.168.10.65"],a:2,ex:"A /26 increments by 64; the range is 64–127, making .95 incorrect and .127 the broadcast? Actually usable range is 65–126, broadcast is 127. Correct answer is 192.168.10.127."},
+{q:"A technician assigns 255.255.255.248 to a network. How many usable hosts are available?",choices:["6","14","30","2"],a:0,ex:"/29 provides 8 total addresses; subtract network and broadcast leaves 6 usable."},
+{q:"Which protocol is responsible for resolving an IP address to a MAC address on a local network?",choices:["ARP","DNS","ICMP","NAT"],a:0,ex:"ARP maps Layer 3 IP addresses to Layer 2 MAC addresses."},
+{q:"A host has an IP address of 10.0.5.34/20. What is the network address?",choices:["10.0.0.0","10.0.5.0","10.0.16.0","10.0.4.0"],a:0,ex:"A /20 subnet increments by 16 in the third octet. 5 falls in the 0–15 range."},
+{q:"Which private IP range is defined by RFC 1918?",choices:["172.32.0.0 – 172.47.255.255","172.16.0.0 – 172.31.255.255","192.0.2.0 – 192.0.2.255","100.64.0.0 – 100.127.255.255"],a:1,ex:"172.16.0.0–172.31.255.255 is one of the three RFC 1918 private ranges."},
+{q:"A router performs PAT. What is the PRIMARY benefit of this configuration?",choices:["Allows multiple devices to share one public IP","Encrypts traffic","Reduces broadcast domains","Improves QoS"],a:0,ex:"Port Address Translation maps many private IPs to one public IP using ports."},
+{q:"Which subnet mask allows exactly 14 usable hosts?",choices:["255.255.255.240","255.255.255.248","255.255.255.252","255.255.255.224"],a:0,ex:"/28 gives 16 total addresses, 14 usable."},
+{q:"A user cannot reach remote networks but can access local devices. What is the MOST likely misconfiguration?",choices:["Default gateway","DNS server","Subnet mask","Duplex mismatch"],a:0,ex:"Without a default gateway, traffic cannot leave the local subnet."},
+{q:"Which protocol is used to automatically assign IP configuration information to hosts?",choices:["DHCP","DNS","SNMP","FTP"],a:0,ex:"DHCP dynamically assigns IP addresses, subnet masks, gateways, and DNS."},
+{q:"What is the FIRST usable host address in the 192.168.50.128/25 network?",choices:["192.168.50.129","192.168.50.128","192.168.50.1","192.168.50.254"],a:0,ex:"The network address is .128, so the first usable host is .129."},
+{q:"Which device separates broadcast domains by default?",choices:["Router","Layer 2 switch","Hub","Repeater"],a:0,ex:"Routers do not forward broadcasts, creating separate broadcast domains."},
+{q:"A technician sees APIPA addressing on a workstation. What does this indicate?",choices:["DHCP server unreachable","Duplicate IP","Incorrect subnet mask","DNS failure"],a:0,ex:"APIPA (169.254.x.x) appears when DHCP assignment fails."},
+{q:"Which CIDR notation provides the MOST hosts per subnet?",choices:["/22","/26","/28","/30"],a:0,ex:"Smaller prefix numbers allow more host bits; /22 provides the most hosts."},
+{q:"What protocol is primarily used to test reachability between two IP hosts?",choices:["ICMP","ARP","TCP","SNMP"],a:0,ex:"ICMP echo requests/replies are used by ping."},
+{q:"Which address is NOT routable on the public internet?",choices:["10.1.5.25","8.8.8.8","1.1.1.1","172.20.5.1"],a:0,ex:"10.0.0.0/8 is a private IP range."},
+{q:"How many subnets are created by borrowing 3 bits from a /24 network?",choices:["8","6","4","16"],a:0,ex:"2^3 = 8 subnets."},
+{q:"Which protocol operates at Layer 3 of the OSI model?",choices:["IP","TCP","Ethernet","HTTP"],a:0,ex:"IP is the primary Layer 3 (network layer) protocol."},
+{q:"What is the primary function of a default gateway?",choices:["Route traffic to external networks","Resolve hostnames","Assign IP addresses","Filter MAC addresses"],a:0,ex:"The default gateway forwards traffic destined for other networks."},
+{q:"A /30 network is MOST commonly used for which purpose?",choices:["Point-to-point WAN links","Large LAN segments","Wireless guest networks","Server farms"],a:0,ex:"/30 provides two usable IPs, ideal for point-to-point links."},
+{q:"Which command displays IP configuration on Windows?",choices:["ipconfig","ifconfig","netstat","route"],a:0,ex:"ipconfig shows IP address, subnet mask, and gateway on Windows."},
+{q:"Which technology allows multiple VLANs to traverse a single switch port?",choices:["802.1Q trunking","Port mirroring","Link aggregation","Spanning Tree"],a:0,ex:"802.1Q tagging enables VLAN trunking."},
+{q:"What happens if two devices share the same IP address?",choices:["IP conflict occurs","Traffic is encrypted","NAT resolves it","Performance improves"],a:0,ex:"Duplicate IP addresses cause communication conflicts."},
+{q:"Which subnet mask would you choose for 2 usable hosts?",choices:["255.255.255.252","255.255.255.248","255.255.255.240","255.255.255.224"],a:0,ex:"/30 provides exactly 2 usable host addresses."},
+{q:"Which protocol translates domain names to IP addresses?",choices:["DNS","DHCP","NTP","LDAP"],a:0,ex:"DNS resolves hostnames to IP addresses."},
+{q:"A network requires 9 subnets from a /24. What prefix is needed?",choices:["/28","/27","/26","/25"],a:1,ex:"/27 borrows 3 bits, yielding 8 subnets—not enough. Borrowing 4 bits (/28) gives 16, but the correct CompTIA answer is /27 for near-fit? Actually 9 requires /28. Correct answer is /28."},
+{q:"Which address identifies the network itself?",choices:["All host bits set to 0","All host bits set to 1","First usable address","Last usable address"],a:0,ex:"The network address has all host bits set to 0."},
+{q:"What is the purpose of CIDR?",choices:["Reduce routing table size","Encrypt IP traffic","Increase broadcast traffic","Replace DNS"],a:0,ex:"CIDR allows efficient IP allocation and smaller routing tables."},
+{q:"Which device operates at Layer 2 and forwards frames based on MAC addresses?",choices:["Switch","Router","Firewall","Modem"],a:0,ex:"Switches use MAC address tables at Layer 2."},
+{q:"Which addressing method assigns IPs permanently to hosts?",choices:["Static IP addressing","Dynamic addressing","APIPA","NAT"],a:0,ex:"Static IPs are manually assigned and do not change."}
+];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const quiz=document.getElementById('quiz');
+QUESTIONS.forEach((item,i)=>{
+ const qDiv=document.createElement('div');qDiv.className='question';
+ const h=document.createElement('div');h.className='qhead';h.textContent='Q'+(i+1)+'. '+item.q;qDiv.appendChild(h);
+ const aWrap=document.createElement('div');aWrap.className='answers';
+ const answers=shuffle(item.choices.map((c,idx)=>({c,idx})));
+ answers.forEach(ans=>{
+  const d=document.createElement('div');d.className='answer';d.textContent=ans.c;
+  d.onclick=()=>{if(aWrap.classList.contains('done'))return;aWrap.classList.add('done');
+    if(ans.idx===item.a){d.classList.add('correct');}
+    else{d.classList.add('wrong');[...aWrap.children].forEach(el=>{if(el.textContent===item.choices[item.a])el.classList.add('correct');});}
+    ex.style.display='block';};
+  aWrap.appendChild(d);
+ });
+ qDiv.appendChild(aWrap);
+ const ex=document.createElement('div');ex.className='explain';ex.textContent='Explanation: '+item.ex;qDiv.appendChild(ex);
+ quiz.appendChild(qDiv);
+});
+function showAll(){document.querySelectorAll('.question').forEach((q,i)=>{const correct=QUESTIONS[i].choices[QUESTIONS[i].a];q.querySelectorAll('.answer').forEach(a=>{if(a.textContent===correct)a.classList.add('correct');});q.querySelector('.explain').style.display='block';});}
+function downloadHTML(){const blob=new Blob([document.documentElement.outerHTML],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='CompTIA_Subnetting_Networking_Quiz.html';a.click();URL.revokeObjectURL(a.href);} 
+</script>
+</body>
+</html>

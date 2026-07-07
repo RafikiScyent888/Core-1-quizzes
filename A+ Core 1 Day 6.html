@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CompTIA A+ Core 1 — Local Networking Hardware (Hardened Exam Mode)</title>
+<style>
+  :root{
+    --bg:#0b1020;
+    --panel:#0f172a;
+    --panel2:#111827;
+    --text:#e5e7eb;
+    --muted:#94a3b8;
+    --line:rgba(148,163,184,0.22);
+    --accent:#38bdf8;
+    --good:#22c55e;
+    --bad:#f97316;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:20px;background:linear-gradient(180deg,#0b1020,#111827);color:var(--text);font-family:Arial,Helvetica,sans-serif;display:flex;justify-content:center}
+  .wrap{max-width:980px;width:100%;background:#020617;border:1px solid rgba(148,163,184,.16);border-radius:18px;padding:22px;box-shadow:0 16px 50px rgba(0,0,0,.45)}
+  h1{margin:0 0 8px;font-size:28px;color:#f8fafc}
+  .lead{margin:0 0 16px;color:var(--muted);font-size:14px}
+  .top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px;font-size:14px;color:var(--muted)}
+  .pill{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:8px 12px}
+  .questionCard{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;min-height:420px}
+  .question{font-size:22px;font-weight:800;line-height:1.35;margin-bottom:16px}
+  .choices{display:flex;flex-direction:column;gap:10px}
+  .choice{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;display:flex;align-items:flex-start;gap:10px;transition:transform .15s ease,border-color .15s ease,background .15s ease}
+  .choice:hover{transform:translateY(-1px);border-color:rgba(56,189,248,.55)}
+  .choice.selected{border-color:var(--accent);background:#0b1224}
+  .choice.correct{border-color:var(--good)}
+  .choice.incorrect{border-color:var(--bad)}
+  .label{font-weight:800;min-width:28px;color:#cbd5e1}
+  .optionText{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;line-height:1.45}
+  .feedback{margin-top:14px;font-size:14px;min-height:22px}
+  .feedback.good{color:var(--good)}
+  .feedback.bad{color:#fb923c}
+  details{margin-top:10px;background:#0a1222;border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:#cbd5e1}
+  details summary{cursor:pointer;color:#cbd5e1;font-weight:700}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px}
+  button{border:none;border-radius:12px;padding:10px 14px;font-size:14px;font-weight:800;cursor:pointer}
+  #prev{background:transparent;color:#cbd5e1;border:1px solid var(--line)}
+  #check{background:#1d4ed8;color:white}
+  #next{background:var(--good);color:#052e16}
+  #submit{background:#0ea5e9;color:#082f49;margin-left:auto}
+  .progress{height:12px;background:#111827;border-radius:999px;overflow:hidden;margin-top:16px;border:1px solid var(--line)}
+  .bar{height:100%;width:0%;background:linear-gradient(90deg,#22c55e,#38bdf8);transition:width .25s ease}
+  .bottom{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:14px}
+  .download button{background:transparent;border:1px dashed rgba(56,189,248,.45);color:#7dd3fc}
+  @media (max-width:720px){
+    body{padding:12px}
+    .wrap{padding:16px}
+    .question{font-size:20px}
+    #submit{margin-left:0}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>CompTIA A+ Core 1 — Local Networking Hardware</h1>
+  <p class="lead">35 hardened exam-style questions · per-load answer shuffle · Next flow · collapsible explanations · equal-length monospace options.</p>
+
+  <div class="top">
+    <div class="pill">Question <span id="qnum">1</span> / <span id="total">35</span></div>
+    <div class="pill">Score <span id="score">0 / 35</span></div>
+  </div>
+
+  <div class="questionCard">
+    <div class="question" id="qtext"></div>
+    <div class="choices" id="choices"></div>
+    <div class="feedback" id="feedback"></div>
+    <details id="expBox" style="display:none">
+      <summary>Show explanation</summary>
+      <div id="expText" style="margin-top:8px"></div>
+    </details>
+  </div>
+
+  <div class="controls">
+    <button id="prev">◀ Prev</button>
+    <button id="check">Check</button>
+    <button id="next">Next ▶</button>
+    <button id="submit">Submit Quiz</button>
+  </div>
+
+  <div class="progress"><div class="bar" id="bar"></div></div>
+
+  <div class="bottom">
+    <div>Use keys 1-4 to answer, then Enter for Next.</div>
+    <div class="download"><button id="downloadBtn">Download This Quiz</button></div>
+  </div>
+</div>
+
+<script>
+const BASE_QUESTIONS = [{"q": "Which device primarily forwards Ethernet frames by consulting a table of learned hardware addresses?", "choices": ["Hub", "Switch", "Repeater", "Patch panel"], "a": 1, "explain": "A switch learns source MAC addresses and forwards frames only toward the appropriate port rather than repeating traffic everywhere."}, {"q": "A network team wants each subnet to stop receiving broadcast traffic from the others. Which device best accomplishes that separation?", "choices": ["Bridge", "Hub", "Managed access point", "Router"], "a": 3, "explain": "Routers break up broadcast domains by routing between separate IP networks."}, {"q": "A small office wants one switch that can assign ports to separate staff and guest segments. Which capability matters most?", "choices": ["Port mirroring", "VLAN configuration", "Signal regeneration", "Cable termination"], "a": 1, "explain": "VLAN support is what lets a managed switch logically separate traffic on different ports."}, {"q": "Which device simply rebuilds a weakened electrical signal and sends it onward without interpreting frames or packets?", "choices": ["Repeater", "Firewall", "Router", "Layer 3 switch"], "a": 0, "explain": "A repeater is a Layer 1 device that regenerates signals only."}, {"q": "What most clearly separates a switch from a hub during normal Ethernet operation?", "choices": ["A switch maintains a MAC table", "A switch converts copper to fiber", "A switch performs analog modulation", "A switch terminates punch-down cables"], "a": 0, "explain": "Switches make forwarding decisions using a MAC address table; hubs just flood traffic out all ports."}, {"q": "Which device most commonly translates many private inside addresses to a smaller number of public outside addresses?", "choices": ["Access point", "Router", "Bridge", "Patch panel"], "a": 1, "explain": "NAT is commonly performed on routers or firewall/router combos at the network edge."}, {"q": "A company already has Ethernet in place and now wants laptops to join the same network wirelessly. Which device adds that function?", "choices": ["Firewall", "Access point", "Repeater", "Modem"], "a": 1, "explain": "An access point bridges wireless clients onto the wired LAN."}, {"q": "Which security device is best known for tracking connection state while filtering traffic?", "choices": ["Hub", "Firewall", "Patch panel", "Media converter"], "a": 1, "explain": "Stateful firewalls inspect traffic and track sessions across multiple layers."}, {"q": "A small office needs switch-based segmentation, monitoring, and policy features. Which switch type fits best?", "choices": ["Managed switch", "Unmanaged switch", "Passive switch", "Hub"], "a": 0, "explain": "Managed switches provide VLANs, monitoring, ACLs, and other administrative controls."}, {"q": "Which device converts between a service provider's signaling method and a customer's digital network equipment?", "choices": ["Modem", "Switch", "Access point", "Bridge"], "a": 0, "explain": "A modem modulates and demodulates signals for certain WAN technologies."}, {"q": "Which edge appliance most often combines routing, security filtering, VPN features, and sometimes content inspection in one box?", "choices": ["Patch panel", "UTM appliance", "NIC", "PoE injector"], "a": 1, "explain": "Unified Threat Management devices bundle several perimeter and security functions together."}, {"q": "Which device is built to send and receive RF signals for client connectivity?", "choices": ["Access point", "Firewall", "Media converter", "Patch panel"], "a": 0, "explain": "Wireless access points use radios and antennas to provide Wi‑Fi service."}, {"q": "Which hardware most directly supplies electrical power to compatible phones, cameras, or APs across Ethernet cabling?", "choices": ["PoE-capable switch", "Router", "Firewall", "Cable modem"], "a": 0, "explain": "A PoE switch injects power onto Ethernet pairs for powered devices."}, {"q": "Which device most effectively reduces collisions by creating a separate collision domain on each active port?", "choices": ["Hub", "Switch", "Repeater", "Media converter"], "a": 1, "explain": "Each switch port is its own collision domain, unlike a hub that shares one domain."}, {"q": "Which device forwards traffic by evaluating destination IP networks rather than destination MAC tables?", "choices": ["Router", "Hub", "Patch panel", "Bridge"], "a": 0, "explain": "Routers forward based on Layer 3 addressing information."}, {"q": "Which component is passive infrastructure used mainly to organize and terminate cabling runs?", "choices": ["Patch panel", "Switch", "Firewall", "Access point"], "a": 0, "explain": "Patch panels are passive cable-management and termination components."}, {"q": "Which device is most appropriate for enforcing a rule that blocks unsolicited traffic from the internet into a LAN?", "choices": ["Hub", "Firewall", "Patch panel", "Wireless repeater"], "a": 1, "explain": "Firewalls are designed to enforce network access policies between trust boundaries."}, {"q": "Which hardware is specifically intended to join separate IP networks and move traffic between them?", "choices": ["Router", "Bridge", "Repeater", "Access point"], "a": 0, "explain": "Routers interconnect distinct networks and choose paths between them."}, {"q": "An analyst wants to copy all packets from one switch port to another for Wireshark capture. Which device feature supports that?", "choices": ["Port mirroring on a managed switch", "Auto-MDI/MDIX on an unmanaged switch", "Collision detection on a hub", "Signal regeneration on a repeater"], "a": 0, "explain": "Port mirroring (SPAN) is typically available on managed switches for monitoring."}, {"q": "Which device can split collision domains while still allowing broadcast frames to remain inside the same VLAN?", "choices": ["Switch", "Router", "Hub", "Gateway"], "a": 0, "explain": "A Layer 2 switch gives each port its own collision domain but forwards broadcasts within the VLAN."}, {"q": "Which device most often stores SSID settings and wireless security parameters such as WPA modes?", "choices": ["Access point", "Patch panel", "Bridge", "Fiber tray"], "a": 0, "explain": "SSIDs and wireless encryption settings are configured on access points or wireless controllers."}, {"q": "Which device is used when one side of a link is fiber optic and the other side is copper Ethernet?", "choices": ["Media converter", "Hub", "Bridge", "Firewall"], "a": 0, "explain": "Media converters translate between different physical media types."}, {"q": "Which switch feature logically separates users into distinct networks without changing the physical cabling layout?", "choices": ["VLANs", "PoE", "NAT", "Load balancing"], "a": 0, "explain": "VLANs create separate broadcast domains on the same switch infrastructure."}, {"q": "Which device stays at Layer 1 and simply repeats incoming bits to other ports?", "choices": ["Hub", "Router", "Layer 3 switch", "Firewall"], "a": 0, "explain": "A hub is a physical-layer repeater and does not inspect frame headers."}, {"q": "Which hardware type is the primary policy-enforcement point when an organization wants to allow some traffic and deny other traffic between networks?", "choices": ["Patch panel", "Firewall", "Unmanaged switch", "Repeater"], "a": 1, "explain": "Firewalls enforce permit/deny rules between zones or networks."}, {"q": "On most LANs, which device type provides hosts with the next-hop address they use to reach remote networks?", "choices": ["Router", "Hub", "Patch panel", "Bridge"], "a": 0, "explain": "The default gateway is typically a router or Layer 3 interface."}, {"q": "Which component inside or attached to a host gives that device a physical and data-link connection to the network medium?", "choices": ["NIC", "Firewall", "Patch panel", "Router"], "a": 0, "explain": "A network interface card provides the host's Layer 1/Layer 2 connectivity."}, {"q": "Which device is intended to rebroadcast wireless signals to extend coverage farther into weak-signal areas?", "choices": ["Wireless repeater", "Switch", "Patch panel", "Modem"], "a": 0, "explain": "A wireless repeater/extender rebroadcasts Wi‑Fi to expand coverage."}, {"q": "Which device has the least traffic awareness because it forwards bits without any table lookups or security decisions?", "choices": ["Hub", "Switch", "Router", "Firewall"], "a": 0, "explain": "A hub simply repeats traffic and lacks switching, routing, or filtering intelligence."}, {"q": "Which device type is most likely to support interface-based ACLs for controlling traffic inside a LAN?", "choices": ["Managed switch", "Repeater", "Patch panel", "Hub"], "a": 0, "explain": "Managed switches often support ACLs at the port, interface, or VLAN level."}, {"q": "Which device blends traditional switching with routing functions so it can switch locally and route between VLANs?", "choices": ["Layer 3 switch", "Hub", "Patch panel", "Media converter"], "a": 0, "explain": "A Layer 3 switch combines Layer 2 switching with Layer 3 routing features."}, {"q": "Which device is commonly positioned at the network edge to connect an internal network to an upstream provider or external network?", "choices": ["Router", "Access switch", "Patch panel", "Wireless controller"], "a": 0, "explain": "Edge routers connect a local network to WAN or internet services."}, {"q": "Which device can provide inter-VLAN communication without requiring a separate external router-on-a-stick design?", "choices": ["Layer 3 switch", "Hub", "Access point", "Repeater"], "a": 0, "explain": "A Layer 3 switch can route between VLAN interfaces internally."}, {"q": "Which hardware must a desktop or laptop have in order to make a direct physical network connection in the first place?", "choices": ["NIC", "Firewall", "Patch panel", "Router"], "a": 0, "explain": "Without a NIC or embedded network adapter, a host has no network interface to connect with."}, {"q": "Which wireless infrastructure component centrally manages multiple APs, roaming behavior, and WLAN policy settings across a site?", "choices": ["Wireless controller", "Hub", "Patch panel", "Bridge"], "a": 0, "explain": "Wireless controllers provide centralized management for many access points and their policies."}];
+const LETTERS = ['A','B','C','D'];
+
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildQuestions(){
+  return BASE_QUESTIONS.map(q => {
+    const order = shuffle([0,1,2,3]);
+    return {
+      q: q.q,
+      rawChoices: q.choices,
+      order,
+      correct: order.indexOf(q.a),
+      explain: q.explain
+    };
+  });
+}
+
+function padChoices(displayChoices){
+  const normalized = displayChoices.map(s => s.replace(/ /g,' ').replace(/\s+$/,''));
+  const maxLen = Math.max(...normalized.map(s => s.length));
+  return normalized.map(s => {
+    const trimmed = s.replace(/\s+$/,'');
+    return trimmed + ' '.repeat(Math.max(0, maxLen - trimmed.length));
+  });
+}
+
+let QUESTIONS = buildQuestions();
+let current = 0;
+let answers = Array(QUESTIONS.length).fill(null);
+let checked = Array(QUESTIONS.length).fill(false);
+
+const qtextEl = document.getElementById('qtext');
+const choicesEl = document.getElementById('choices');
+const feedbackEl = document.getElementById('feedback');
+const expBox = document.getElementById('expBox');
+const expText = document.getElementById('expText');
+const qnumEl = document.getElementById('qnum');
+const scoreEl = document.getElementById('score');
+const barEl = document.getElementById('bar');
+
+function renderQuestion(idx){
+  const item = QUESTIONS[idx];
+  qnumEl.textContent = idx + 1;
+  qtextEl.textContent = (idx + 1) + '. ' + item.q;
+  feedbackEl.textContent = '';
+  feedbackEl.className = 'feedback';
+  expBox.style.display = checked[idx] ? 'block' : 'none';
+  expBox.open = false;
+  expText.textContent = item.explain;
+
+  const displayChoices = item.order.map(i => item.rawChoices[i].replace(/\s*\.$/, '') + '.');
+  const padded = padChoices(displayChoices);
+  item.paddedChoices = padded;
+
+  choicesEl.innerHTML = '';
+  padded.forEach((choiceText, displayIdx) => {
+    const div = document.createElement('div');
+    let cls = 'choice';
+    if (answers[idx] === displayIdx) cls += ' selected';
+    if (checked[idx] && displayIdx === item.correct) cls += ' correct';
+    if (checked[idx] && answers[idx] === displayIdx && displayIdx !== item.correct) cls += ' incorrect';
+    div.className = cls;
+    div.innerHTML = `<span class="label">${LETTERS[displayIdx]}.</span><span class="optionText">${choiceText}</span>`;
+    div.addEventListener('click', () => selectChoice(displayIdx));
+    choicesEl.appendChild(div);
+  });
+
+  if (checked[idx]) showFeedback(idx);
+  updateProgress();
+  updateScore();
+}
+
+function selectChoice(choiceIdx){
+  answers[current] = choiceIdx;
+  renderQuestion(current);
+}
+
+function showFeedback(idx){
+  const item = QUESTIONS[idx];
+  const sel = answers[idx];
+  if (sel === null) return;
+  if (sel === item.correct) {
+    feedbackEl.textContent = 'Correct.';
+    feedbackEl.className = 'feedback good';
+  } else {
+    feedbackEl.textContent = 'Incorrect.';
+    feedbackEl.className = 'feedback bad';
+  }
+  expBox.style.display = 'block';
+}
+
+function checkCurrent(){
+  if (answers[current] === null) return;
+  checked[current] = true;
+  renderQuestion(current);
+}
+
+function updateScore(){
+  let correct = 0;
+  QUESTIONS.forEach((q, i) => {
+    if (checked[i] && answers[i] === q.correct) correct++;
+  });
+  scoreEl.textContent = `${correct} / ${QUESTIONS.length}`;
+}
+
+function updateProgress(){
+  const pct = ((current + 1) / QUESTIONS.length) * 100;
+  barEl.style.width = pct + '%';
+}
+
+document.getElementById('prev').addEventListener('click', () => {
+  if (current > 0) {
+    current--;
+    renderQuestion(current);
+  }
+});
+
+document.getElementById('next').addEventListener('click', () => {
+  if (!checked[current] && answers[current] !== null) checked[current] = true;
+  if (current < QUESTIONS.length - 1) {
+    current++;
+    renderQuestion(current);
+  } else {
+    renderQuestion(current);
+  }
+});
+
+document.getElementById('check').addEventListener('click', checkCurrent);
+
+document.getElementById('submit').addEventListener('click', () => {
+  for (let i = 0; i < QUESTIONS.length; i++) {
+    if (answers[i] !== null) checked[i] = true;
+  }
+  renderQuestion(current);
+  updateScore();
+  alert('Quiz submitted. Review any question with Prev/Next and open the explanation as needed.');
+});
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Aplus_Core1_Day6_hardened_exam_mode.html';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key >= '1' && e.key <= '4') {
+    const idx = Number(e.key) - 1;
+    if (idx >= 0 && idx < 4) selectChoice(idx);
+  }
+  if (e.key === 'Enter') document.getElementById('next').click();
+  if (e.key === 'ArrowLeft') document.getElementById('prev').click();
+  if (e.key === 'ArrowRight') document.getElementById('next').click();
+});
+
+renderQuestion(0);
+</script>
+</body>
+</html>

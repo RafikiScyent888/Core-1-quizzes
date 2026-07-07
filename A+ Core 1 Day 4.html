@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CompTIA — Power, Disk, System & Display Issues — 35 Q Quiz</title>
+<style>
+:root{--bg:#0b1220;--card:#071021;--accent:#06b6d4;--muted:#94a3b8}
+*{box-sizing:border-box}
+body{font-family:Inter,Segoe UI,Arial,sans-serif;background:#071124;color:#e6eef6;margin:0;padding:20px;display:flex;justify-content:center}
+.wrap{width:100%;max-width:980px}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+h1{margin:0;font-size:20px}
+.meta{color:var(--muted);font-size:13px}
+.card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:16px;border-radius:10px}
+.container{display:grid;grid-template-columns:1fr 260px;gap:14px}
+.qtext{font-weight:700;margin-bottom:8px}
+.choices{display:flex;flex-direction:column;gap:8px}
+.choice{background:#071a29;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);cursor:pointer;transition:transform .15s ease,border-color .15s ease}
+.choice:hover{transform:translateY(-3px)}
+.choice.selected{outline:2px solid var(--accent)}
+.choice.correct{border-color:#16a34a}
+.choice.incorrect{border-color:#ef4444}
+.controls{display:flex;gap:8px;margin-top:12px}
+button{background:var(--accent);color:#042027;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+button.ghost{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04)}
+.progress{height:10px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden;margin-top:12px}
+.bar{height:10px;background:linear-gradient(90deg,var(--accent),#7c3aed);width:0%;transition:width .3s}
+.side{background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.02));padding:12px;border-radius:8px}
+.score{font-size:26px;font-weight:800}
+.footer{display:flex;gap:8px;margin-top:12px}
+.feedback-correct{color:#16a34a;font-size:14px;margin-top:8px}
+.feedback-incorrect{color:#ef4444;font-size:14px;margin-top:8px}
+details{margin-top:8px;font-size:13px;color:var(--muted)}
+details summary{cursor:pointer;color:var(--muted);outline:none}
+@media(max-width:880px){.container{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div>
+      <h1>CompTIA — Power, Disk, System & Display Issues — 35 Questions</h1>
+      <div class="meta">Shuffled answers, real-time feedback, collapsible explanations, downloadable single-file HTML.</div>
+    </div>
+    <div class="meta">Questions: <strong>35</strong></div>
+  </div>
+
+  <div class="card">
+    <div class="container">
+      <div>
+        <div id="qtext" class="qtext">Loading...</div>
+        <div id="choices" class="choices"></div>
+        <div id="feedback"></div>
+        <details id="expDetails" style="display:none">
+          <summary>Show explanation</summary>
+          <div id="expText" style="margin-top:6px"></div>
+        </details>
+        <div class="controls">
+          <button id="prev" class="ghost">◀ Prev</button>
+          <button id="next">Next ▶</button>
+          <div style="flex:1"></div>
+          <button id="submit">Submit</button>
+        </div>
+        <div class="progress"><div id="bar" class="bar"></div></div>
+      </div>
+
+      <aside class="side">
+        <div>Question <strong id="qnum">0</strong> / 35</div>
+        <div style="height:10px"></div>
+        <div class="score" id="score">—</div>
+        <div class="footer">
+          <button id="restart" class="ghost">Restart</button>
+          <button id="download" class="ghost">Download HTML</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var BASE_QUESTIONS = [
+    {q:"A desktop intermittently shuts down during GPU-intensive workloads. Event logs show Kernel-Power 41 errors with no bugcheck. Which power characteristic should be evaluated FIRST?",choices:["Sustained +12V rail amperage under transient load","Total nameplate wattage of the PSU","AC input voltage from the wall","Efficiency rating (80 PLUS level)"],a:0,explain:"Modern GPUs create transient spikes on the +12V rail; insufficient amperage headroom can trigger Kernel-Power events."},
+    {q:"A system powers on but emits continuous memory-related beep codes and never initializes video. Which action MOST directly isolates the fault?",choices:["Test with a known-good DIMM in the primary slot","Reset the OS boot configuration","Replace the video cable","Update the graphics driver"],a:0,explain:"Using a known-good module in the primary slot isolates RAM versus board issues."},
+    {q:"SMART shows a rapidly increasing reallocated sector count while pending sectors fluctuate. What is the BEST CompTIA-recommended response?",choices:["Immediately back up data and schedule drive replacement","Run manufacturer low-level diagnostics repeatedly","Disable write caching to stabilize the disk","Convert the disk to GPT"],a:0,explain:"Reallocated and pending sectors indicate media degradation; data protection is the priority."},
+    {q:"A system completes POST but reports 'No bootable device' after a firmware update. Which setting is MOST likely misconfigured?",choices:["UEFI vs Legacy/CSM boot mode","CPU virtualization extensions","XMP memory profile","Integrated audio controller"],a:0,explain:"Firmware updates often reset boot mode, preventing the OS loader from being detected."},
+    {q:"A laptop display is barely visible except under direct light, and external displays work normally. Which component failure BEST fits?",choices:["Backlight circuit or inverter stage","EDID data corruption","GPU framebuffer allocation","Panel timing controller"],a:0,explain:"A faint image with external display working indicates loss of backlight illumination."},
+    {q:"Which symptom MOST strongly correlates with thermal throttling rather than immediate thermal shutdown?",choices:["Noticeable performance drops under sustained load","Instant power loss during POST","Corrupted system time","Intermittent USB disconnects"],a:0,explain:"Thermal throttling reduces performance to manage heat before shutdown thresholds are reached."},
+    {q:"A RAID 1 array reports a single disk failure but remains online. According to best practice, what should be done NEXT?",choices:["Replace the failed disk and allow the mirror to rebuild","Break the mirror to preserve performance","Convert the array to RAID 0","Run defragmentation on the remaining disk"],a:0,explain:"RAID 1 tolerates one disk failure but must be rebuilt promptly to restore redundancy."},
+    {q:"A newly installed SATA SSD is absent from firmware but spins up and is warm to the touch. What should be verified FIRST?",choices:["Correct SATA port enablement and controller mode","Operating system storage driver","Disk partition scheme","User permissions"],a:0,explain:"Disabled ports or incorrect controller mode can prevent detection at the firmware level."},
+    {q:"Which display artifact MOST clearly differentiates screen tearing from ghosting?",choices:["Horizontal frame discontinuities during motion","Trailing afterimages behind moving objects","Random pixel discoloration","Periodic backlight flicker"],a:0,explain:"Screen tearing shows mismatched frames, while ghosting is pixel response delay."},
+    {q:"A system clock resets after every full power loss despite correct shutdowns. Which component failure is MOST likely?",choices:["CMOS battery","Real-time clock crystal","Operating system time service","Power supply standby rail"],a:0,explain:"The CMOS battery maintains RTC data when the system is unpowered."},
+    {q:"A workstation reboots during rendering workloads with normal thermals and no dump files. What should be tested NEXT?",choices:["PSU voltage stability under load","GPU driver version","Monitor refresh rate","Keyboard firmware"],a:0,explain:"Load-related reboots without dumps often indicate unstable power delivery."},
+    {q:"Which Windows utility BEST verifies logical file system integrity without modifying partition structure?",choices:["chkdsk","diskpart","sfc","dxdiag"],a:0,explain:"chkdsk checks and repairs logical file system errors."},
+    {q:"A DisplayPort monitor intermittently reports 'No Signal' after sleep. What is the MOST efficient first step?",choices:["Test with a known-good cable and alternate DP port","Reinstall the operating system","Replace the graphics card","Flash the motherboard firmware"],a:0,explain:"Cable and port issues are common with DP handshake failures."},
+    {q:"One long beep followed by two short beeps during POST MOST commonly indicates which failure?",choices:["Discrete graphics adapter","System memory","Processor","Power supply"],a:0,explain:"This beep pattern is widely associated with video adapter faults."},
+    {q:"Which observation MOST reliably distinguishes HDD mechanical failure from logical corruption?",choices:["Audible clicking or grinding noises","Repeated CHKDSK repairs","Slow application launches","High CPU utilization"],a:0,explain:"Mechanical noises indicate physical drive failure."},
+    {q:"Users report eye strain and motion blur on a workstation display. Which adjustment is MOST appropriate if supported?",choices:["Increase refresh rate","Lower screen resolution","Disable hardware acceleration","Reduce color depth"],a:0,explain:"Higher refresh rates reduce perceived blur and flicker."},
+    {q:"A desktop momentarily loses power when multiple USB devices are connected. What is the MOST probable cause?",choices:["Insufficient PSU capacity on the +5V rail","Incorrect BIOS revision","Malware infection","Loose DIMM"],a:0,explain:"Peripheral load can exceed PSU rail capacity."},
+    {q:"Which device provides both temporary power and voltage regulation during brownouts?",choices:["UPS with AVR","Surge protector","Power strip","Line splitter"],a:0,explain:"AVR-equipped UPS units stabilize voltage as well as supply battery power."},
+    {q:"A disk reports frequent I/O errors but passes SMART self-tests. What should be checked NEXT?",choices:["SATA cable and controller port","Monitor firmware","Keyboard layout","CPU microcode"],a:0,explain:"Cables and ports commonly cause I/O errors independent of disk health."},
+    {q:"A system freezes intermittently with no BSOD or logs. Which component should be validated FIRST?",choices:["System memory using diagnostics","Display resolution","Disk fragmentation","Printer drivers"],a:0,explain:"Unstable RAM often causes silent freezes."},
+    {q:"Which laptop battery condition requires IMMEDIATE replacement for safety reasons?",choices:["Physical swelling of the battery","Gradually reduced runtime","Slow charging behavior","Inaccurate charge reporting"],a:0,explain:"Swollen batteries pose fire and rupture hazards."},
+    {q:"A 4K monitor is limited to 30Hz over HDMI but supports higher refresh rates. What is the MOST likely limitation?",choices:["HDMI version or cable bandwidth","Insufficient VRAM","Incorrect ICC profile","Failing PSU"],a:0,explain:"Older HDMI standards cap 4K output at 30Hz."},
+    {q:"Before replacing suspected faulty hardware, which CompTIA step should be performed?",choices:["Validate with known-good components","Reinstall the OS","Update all drivers","Clear temporary files"],a:0,explain:"Known-good testing isolates the faulty component."},
+    {q:"A RAID 5 array enters degraded mode after one disk failure. What action should be taken FIRST?",choices:["Replace the failed disk and rebuild","Back up data and remove the array","Convert to RAID 0","Ignore until another disk fails"],a:0,explain:"RAID 5 tolerates one failure but must be rebuilt to restore fault tolerance."},
+    {q:"A PC powers off under load but remains stable at idle. Which cause is MOST consistent?",choices:["Failing or undersized power supply","Incorrect time zone","Malware infection","Loose display cable"],a:0,explain:"Load-dependent shutdowns point to power delivery issues."},
+    {q:"Which firmware setting change can directly prevent an installed OS from booting?",choices:["Switching between UEFI and Legacy boot modes","Adjusting fan curves","Disabling onboard audio","Changing RGB profiles"],a:0,explain:"Boot mode mismatches prevent the OS loader from being recognized."},
+    {q:"After replacing a monitor, colors appear inaccurate compared to the previous display. What is the BEST remediation?",choices:["Apply proper calibration or ICC profile","Replace the GPU","Reinstall the OS","Disable network services"],a:0,explain:"Color profiles vary between displays and must be calibrated."},
+    {q:"Which power condition is BEST mitigated by automatic voltage regulation?",choices:["Brownouts","Surges","Blackouts","Ground loops"],a:0,explain:"AVR corrects sustained under-voltage conditions."},
+    {q:"Which symptom MOST strongly indicates a failing graphics card rather than a driver issue?",choices:["Persistent visual artifacts across multiple systems","Slow boot times","Incorrect system time","Disk read errors"],a:0,explain:"Artifacts that persist across systems indicate hardware failure."},
+    {q:"A system disk was disconnected without proper shutdown. Which utility should be run FIRST?",choices:["chkdsk","taskmgr","dxdiag","ipconfig"],a:0,explain:"File system consistency should be verified immediately."},
+    {q:"A monitor loses signal when the cable is slightly moved. What should be checked FIRST?",choices:["Connector seating and retention mechanism","GPU firmware","Operating system drivers","Power supply"],a:0,explain:"Physical connection issues are the most common cause."},
+    {q:"When selecting a PSU for a high-end workstation, which specification is MOST critical?",choices:["Combined wattage and rail amperage","Chassis color","USB port count","Monitor resolution"],a:0,explain:"Adequate power delivery capacity ensures system stability."},
+    {q:"A system fails to retain BIOS settings after shutdown. Which component should be replaced?",choices:["CMOS battery","Primary storage","System RAM","Graphics adapter"],a:0,explain:"The CMOS battery maintains firmware settings."},
+    {q:"Which display symptom MOST commonly results from an unsupported refresh rate?",choices:["Flickering or unstable image","Hard drive noise","POST beep codes","Network latency"],a:0,explain:"Unsupported refresh rates cause instability."},
+    {q:"A technician hears repetitive clicking from an HDD. What action should be taken IMMEDIATELY?",choices:["Back up data and replace the drive","Run disk defragmentation","Update firmware","Change SATA mode"],a:0,explain:"Clicking indicates imminent mechanical failure."},
+    {q:"According to CompTIA troubleshooting methodology, what is ALWAYS the first step?",choices:["Identify the problem","Establish a theory","Test the theory","Implement the solution"],a:0,explain:"Problem identification is the foundation of the troubleshooting process."},
+    {q:"A display exhibits ghosting during fast motion scenes. What is the MOST likely technical cause?",choices:["Slow pixel response time","Insufficient disk throughput","Incorrect boot configuration","Depleted CMOS battery"],a:0,explain:"Ghosting results from slow pixel transitions."},
+    {q:"Random system freezes begin after a memory upgrade. What should be verified FIRST?",choices:["RAM compatibility, speed, and voltage","Monitor resolution","Disk partition style","BIOS password"],a:0,explain:"Incompatible RAM commonly causes instability."},
+    {q:"Which hardware failure presents the MOST immediate physical safety risk?",choices:["Swollen lithium-ion battery","Failing SSD","Dead CMOS battery","Corrupt operating system"],a:0,explain:"Swollen batteries can rupture or ignite."},
+    {q:"After installing a discrete GPU, an integrated-graphics system shows no display. What is the FIRST corrective action?",choices:["Connect the monitor to the discrete GPU output","Update the operating system","Clear CMOS","Replace system memory"],a:0,explain:"Motherboard video outputs are typically disabled when a discrete GPU is installed."}
+  ];
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t = a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+
+  function buildQuestions(){
+    return BASE_QUESTIONS.map(function(q){
+      var order = shuffle([0,1,2,3]);
+      var correctDisplayIndex = order.indexOf(q.a);
+      return {
+        q: q.q,
+        choices: q.choices,
+        order: order,
+        correct: correctDisplayIndex,
+        explain: q.explain
+      };
+    });
+  }
+
+  var QUESTIONS = buildQuestions();
+  var idx = 0;
+  var answers = new Array(QUESTIONS.length).fill(null);
+
+  var qtext = document.getElementById('qtext');
+  var choicesEl = document.getElementById('choices');
+  var qnum = document.getElementById('qnum');
+  var bar = document.getElementById('bar');
+  var scoreEl = document.getElementById('score');
+  var feedbackEl = document.getElementById('feedback');
+  var expDetails = document.getElementById('expDetails');
+  var expText = document.getElementById('expText');
+
+  function render(){
+    var q = QUESTIONS[idx];
+    qnum.textContent = (idx+1) + ' / ' + QUESTIONS.length;
+    qtext.textContent = q.q;
+    choicesEl.innerHTML = '';
+    feedbackEl.innerHTML = '';
+    feedbackEl.className = '';
+    expDetails.style.display = 'none';
+    expDetails.open = false;
+    expText.textContent = '';
+
+    var letters = ['A','B','C','D'];
+
+    q.order.forEach(function(origIdx, displayIdx){
+      var d = document.createElement('div');
+      d.className = 'choice' + (answers[idx]===displayIdx ? ' selected' : '');
+      d.innerHTML = letters[displayIdx] + '. ' + q.choices[origIdx];
+      d.onclick = function(){ select(displayIdx); };
+      choicesEl.appendChild(d);
+    });
+
+    bar.style.width = Math.round((idx/(QUESTIONS.length-1))*100) + '%';
+  }
+
+  function updateScoreLive(){
+    var correct = 0;
+    QUESTIONS.forEach(function(q,i){
+      if(answers[i] !== null && answers[i] === q.correct) correct++;
+    });
+    scoreEl.textContent = correct + ' / ' + QUESTIONS.length;
+  }
+
+  function select(choiceIdx){
+    answers[idx] = choiceIdx;
+    Array.prototype.forEach.call(choicesEl.children, function(el,ci){
+      el.classList.toggle('selected', ci === choiceIdx);
+    });
+    showFeedback();
+    updateScoreLive();
+  }
+
+  function showFeedback(){
+    var q = QUESTIONS[idx];
+    var userSel = answers[idx];
+    if(userSel === null) return;
+
+    var letters = ['A','B','C','D'];
+    var correctIdx = q.correct;
+    var correctText = q.choices[q.order[correctIdx]];
+    var userText = q.choices[q.order[userSel]];
+
+    Array.prototype.forEach.call(choicesEl.children, function(el,ci){
+      el.classList.remove('correct','incorrect');
+      if(ci === correctIdx) el.classList.add('correct');
+      if(ci === userSel && userSel !== correctIdx) el.classList.add('incorrect');
+    });
+
+    if(userSel === correctIdx){
+      feedbackEl.className = 'feedback-correct';
+      feedbackEl.textContent = 'Correct — ' + letters[userSel] + '. ' + userText;
+    } else {
+      feedbackEl.className = 'feedback-incorrect';
+      feedbackEl.innerHTML = 'Incorrect — you: <strong>' + letters[userSel] + '. ' + userText +
+        '</strong>; correct: <strong>' + letters[correctIdx] + '. ' + correctText + '</strong>';
+    }
+
+    expText.textContent = q.explain;
+    expDetails.style.display = 'block';
+    expDetails.open = true;
+  }
+
+  document.getElementById('next').onclick = function(){
+    if(idx < QUESTIONS.length-1){ idx++; render(); }
+  };
+  document.getElementById('prev').onclick = function(){
+    if(idx > 0){ idx--; render(); }
+  };
+
+  document.getElementById('submit').onclick = function(){
+    if(!confirm('Submit quiz and lock in your score?')) return;
+    var correct = 0;
+    QUESTIONS.forEach(function(q,i){
+      if(answers[i] === q.correct) correct++;
+    });
+    scoreEl.textContent = correct + ' / ' + QUESTIONS.length;
+    showFeedback();
+  };
+
+  document.getElementById('restart').onclick = function(){
+    if(!confirm('Restart quiz? This will clear answers and reshuffle choices.')) return;
+    QUESTIONS = buildQuestions();
+    answers = new Array(QUESTIONS.length).fill(null);
+    idx = 0;
+    scoreEl.textContent = '—';
+    render();
+  };
+
+  document.getElementById('download').onclick = function(){
+    var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+    var blob = new Blob([html], {type:'text/html'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'CompTIA_Power_Disk_System_Display_Quiz_Shuffled.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight') document.getElementById('next').click();
+    if(e.key === 'ArrowLeft') document.getElementById('prev').click();
+    if(e.key >= '1' && e.key <= '4'){
+      var idxChoice = Number(e.key) - 1;
+      var currentButtons = document.querySelectorAll('.choice');
+      if(currentButtons[idxChoice]) currentButtons[idxChoice].click();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

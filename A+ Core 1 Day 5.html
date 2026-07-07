@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>CompTIA Printers Quiz — Interactive</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+ body{font-family:Arial,Helvetica,sans-serif;background:#0f172a;margin:0;padding:20px;display:flex;justify-content:center;color:#e5e7eb}
+ h1{text-align:center;margin:0 0 10px 0}
+ .quiz-box{max-width:900px;width:100%;background:#020617;border-radius:12px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+ .header-line{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px;color:#9ca3af}
+ .question{font-size:18px;font-weight:bold;margin-bottom:10px}
+ .choices{display:flex;flex-direction:column;gap:8px}
+ .choice{margin:0;padding:10px 12px;background:#111827;border-radius:8px;cursor:pointer;border:1px solid rgba(148,163,184,0.25);display:flex;gap:8px;align-items:flex-start;transition:transform .15s ease,border-color .15s ease,background .15s ease}
+ .choice:hover{transform:translateY(-2px);border-color:#38bdf8}
+ .choice.selected{border-color:#38bdf8;background:#0b1120}
+ .choice.correct{border-color:#22c55e}
+ .choice.incorrect{border-color:#ef4444}
+ .label{font-weight:700;min-width:20px}
+ .control{display:flex;gap:10px;margin-top:16px;align-items:center}
+ button{padding:9px 14px;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600}
+ #prev{background:transparent;color:#9ca3af;border:1px solid rgba(148,163,184,0.4)}
+ #next{background:#22c55e;color:#022c22}
+ #submit{background:#0ea5e9;color:#022c22;margin-left:auto}
+ .progress{width:100%;height:10px;background:#111827;border-radius:999px;margin-top:14px;overflow:hidden}
+ .bar{width:0%;height:10px;background:linear-gradient(90deg,#22c55e,#0ea5e9);transition:width .3s ease}
+ .score-line{margin-top:10px;font-size:14px;color:#9ca3af;display:flex;justify-content:space-between;align-items:center}
+ .score-val{font-size:20px;font-weight:800;color:#e5e7eb}
+ .feedback-correct{color:#22c55e;font-size:14px;margin-top:10px}
+ .feedback-incorrect{color:#f97316;font-size:14px;margin-top:10px}
+ details{margin-top:8px;font-size:13px;color:#9ca3af}
+ details summary{cursor:pointer;outline:none}
+ .download-box{text-align:center;margin-top:18px}
+ .download-box button{background:transparent;color:#0ea5e9;border:1px dashed rgba(56,189,248,0.5)}
+ @media(max-width:700px){
+   .quiz-box{padding:16px}
+   .control{flex-wrap:wrap}
+   #submit{margin-left:0}
+ }
+</style>
+</head>
+<body>
+<div class="quiz-box">
+  <h1>CompTIA Printers – 35 Question Quiz</h1>
+  <div class="header-line">
+    <div>Shuffled answers · real-time feedback · collapsible explanations</div>
+    <div>Questions: <strong>35</strong></div>
+  </div>
+
+  <div id="quiz">
+    <div class="question" id="qtext">Loading...</div>
+    <div class="choices" id="choices"></div>
+    <div id="feedback"></div>
+    <details id="expDetails" style="display:none">
+      <summary>Show explanation</summary>
+      <div id="expText" style="margin-top:6px"></div>
+    </details>
+  </div>
+
+  <div class="control">
+    <button id="prev">◀ Prev</button>
+    <button id="next">Next ▶</button>
+    <div style="flex:1"></div>
+    <button id="submit">Submit Quiz</button>
+  </div>
+
+  <div class="progress"><div class="bar" id="bar"></div></div>
+
+  <div class="score-line">
+    <div>Question <span id="qnum">1</span> / <span id="total">35</span></div>
+    <div>Score: <span class="score-val" id="score">0 / 35</span></div>
+  </div>
+
+  <div class="download-box">
+    <button id="downloadBtn">Download This Quiz</button>
+  </div>
+</div>
+
+<script>
+const BASE_QUESTIONS = [
+ { q:"Which component is responsible for heating toner onto the paper in a laser printer?", c:["Transfer belt","Pickup roller","Fuser assembly","Imaging drum"], a:2, explain:"The fuser assembly uses heat and pressure to permanently bond toner to the paper." },
+ { q:"Streaks or lines on printed pages in a laser printer often indicate a problem with:", c:["Fuser","Imaging drum","Formatter board","HVPS"], a:1, explain:"Damage or contamination on the imaging drum commonly causes repeated streaks or lines." },
+ { q:"What type of printer uses piezoelectric crystals or thermal nozzles?", c:["Laser","Impact","Inkjet","Thermal"], a:2, explain:"Inkjet printers fire droplets of ink using either thermal bubbles or piezoelectric crystals." },
+ { q:"A printer that prints one line at a time using pins striking a ribbon is:", c:["Laser","Dot-matrix","Inkjet","Thermal"], a:1, explain:"Dot-matrix printers are impact devices that use pins striking an inked ribbon." },
+ { q:"A common cause of ghosting in laser printers is:", c:["Low toner","Defective fuser","Dirty paper path","Wrong DPI setting"], a:1, explain:"A failing fuser can leave faint repeated images (ghosting) because toner is not fully fused." },
+ { q:"Which printer type requires special paper coated with chemicals that react to heat?", c:["Thermal","Inkjet","Laser","Impact"], a:0, explain:"Direct thermal printers use heat-sensitive paper that darkens where the printhead heats it." },
+ { q:"Which part moves toner from the cartridge to the imaging drum?", c:["Pickup roller","Transfer roller","Fuser","Exit roller"], a:1, explain:"The transfer roller transfers toner from the drum to the paper in the imaging process." },
+ { q:"What causes paper jams near the tray?", c:["Bad fuser","Dirty corona wire","Worn pickup rollers","Low toner"], a:2, explain:"Worn or glazed pickup rollers fail to grab paper correctly, causing jams at the tray." },
+ { q:"An inkjet printer producing faded output usually needs:", c:["New fuser","New printhead or cartridges","New transfer roller","Firmware update"], a:1, explain:"Low or dried ink and clogged printheads cause faded output; replacing/cleaning them resolves it." },
+ { q:"Calibration on color printers adjusts:", c:["Color alignment","Voltage regulation","Fuser temp","Print speed"], a:0, explain:"Calibration aligns colors and registration so CMYK layers line up correctly." },
+ { q:"Which printer uses toner?", c:["Inkjet","Laser","Thermal","Impact"], a:1, explain:"Laser printers use powdered toner and an electro-photographic process." },
+ { q:"Which issue results from a clogged inkjet nozzle?", c:["Ghosting","Color gaps","Paper curl","Wrinkling"], a:1, explain:"Clogged nozzles prevent ink from spraying, causing missing lines or color gaps." },
+ { q:"What should be cleaned to fix dark vertical streaks in a laser printer?", c:["Printhead","Fuser","Corona wire","Transfer belt"], a:2, explain:"A dirty or damaged corona wire can cause dark vertical streaks on the page." },
+ { q:"Impact printers require regular replacement of:", c:["Toner","Ink cartridges","Ribbons","Drums"], a:2, explain:"Impact printers use inked ribbons that wear out and must be replaced." },
+ { q:"A printer showing 'Out of Memory' errors likely needs:", c:["More toner","More RAM","Firmware update","New printhead"], a:1, explain:"Printer memory (RAM) stores print jobs; complex jobs can exceed capacity." },
+ { q:"What controls the print language like PCL or PostScript?", c:["Formatter board","Fuser","Transfer roller","Pickup assembly"], a:0, explain:"The formatter board interprets print languages and renders the page image." },
+ { q:"Thermal printers often show faded text due to:", c:["Low toner","Worn printhead","Old thermal paper","Dirty corona wire"], a:2, explain:"Thermal paper degrades over time; old stock prints faintly even with a good head." },
+ { q:"Which component must be replaced when it reaches its page count limit?", c:["Fuser","Imaging drum","Pickup roller","Transfer belt"], a:1, explain:"Many laser printers track drum life; worn drums cause quality issues and must be replaced." },
+ { q:"A laser printer's first step in the imaging process is:", c:["Developing","Cleaning","Charging","Transferring"], a:2, explain:"The drum is uniformly charged first so the laser can selectively discharge areas to form the image." },
+ { q:"If colors do not line up correctly on a color laser printer, perform:", c:["Firmware update","Calibration","Fuser reset","Drum cleaning"], a:1, explain:"Color misalignment is corrected by running the printer’s color calibration routine." },
+ { q:"A grinding noise usually indicates:", c:["Low toner","Mechanical gear failure","Bad fuser","Dirty corona wire"], a:1, explain:"Grinding sounds typically come from worn or broken gears or mechanical assemblies." },
+ { q:"If paper curls after printing, the likely cause is:", c:["Humidity","Overheated fuser","Low toner","Dirty rollers"], a:1, explain:"Excessive fuser heat can over-dry paper, causing it to curl as it exits." },
+ { q:"What is used to clean laser printer internals?", c:["Regular vacuum","Toner-safe vacuum","Compressed oil","Ammonia spray"], a:1, explain:"Toner-safe (HEPA) vacuums are designed to safely capture fine toner particles." },
+ { q:"Ink smearing from an inkjet usually means:", c:["Bad fuser","Wet ink","Low toner","Bad formatter"], a:1, explain:"If pages are handled before ink dries, or if too much ink is used, smearing occurs." },
+ { q:"What is the last step of the laser printing process?", c:["Cleaning","Fusing","Transferring","Developing"], a:0, explain:"After fusing, the drum is cleaned to remove residual toner for the next cycle." },
+ { q:"Paper pulled at an angle indicates:", c:["Bad imaging drum","Worn rollers","Bad fuser","Low toner"], a:1, explain:"Uneven or worn rollers pull paper skewed, causing angled feeds and jams." },
+ { q:"Which printer type is best for carbon copy forms?", c:["Laser","Inkjet","Dot-matrix","Thermal"], a:2, explain:"Impact (dot-matrix) printers physically strike through multi-part forms to create copies." },
+ { q:"An inkjet printer showing banding usually needs:", c:["Alignment","Calibration","New fuser","New transfer belt"], a:0, explain:"Printhead alignment corrects banding caused by misaligned nozzles or carriage." },
+ { q:"Heavy toner on one side of page means:", c:["Bad transfer roller","Low toner","Bad fuser","Wrong paper type"], a:0, explain:"A failing transfer roller can cause uneven toner distribution across the page." },
+ { q:"A laser printer with toner flaking off pages needs:", c:["New drum","New fuser","New pickup roller","Firmware update"], a:1, explain:"If toner rubs off easily, the fuser is not properly bonding toner to the paper." },
+ { q:"Thermal printers often require cleaning of:", c:["Corona wire","Thermal head","Drum","Transfer belt"], a:1, explain:"Residue on the thermal head causes poor print quality and must be cleaned periodically." },
+ { q:"What causes repeating marks?", c:["Drum damage","Bad pickup roller","Low toner","Wet paper"], a:0, explain:"Damage on the drum surface repeats at the drum’s circumference interval on the page." },
+ { q:"Laser printers require which maintenance kit part?", c:["Fuser","Pickup rollers","Transfer roller","All of the above"], a:3, explain:"Maintenance kits typically include fuser, rollers, and sometimes transfer components." },
+ { q:"If a network printer won't print, check:", c:["DNS","Print queue","Fuser temp","Paper humidity"], a:1, explain:"Jobs stuck or paused in the print queue are a common cause of 'not printing' complaints." },
+ { q:"Which port is commonly used for local printers?", c:["LPT","HDMI","SATA","Ethernet"], a:0, explain:"Legacy local printers often used the parallel LPT port (e.g., LPT1)." }
+];
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+let QUESTIONS = BASE_QUESTIONS.map(q => {
+  const order = shuffle([0,1,2,3]);
+  const correctDisplayIndex = order.indexOf(q.a);
+  return {
+    q: q.q,
+    choices: q.c,
+    order,
+    correct: correctDisplayIndex,
+    explain: q.explain
+  };
+});
+
+let current = 0;
+let answers = Array(QUESTIONS.length).fill(null);
+
+const qtextEl = document.getElementById('qtext');
+const choicesEl = document.getElementById('choices');
+const feedbackEl = document.getElementById('feedback');
+const expDetails = document.getElementById('expDetails');
+const expText = document.getElementById('expText');
+const barEl = document.getElementById('bar');
+const qnumEl = document.getElementById('qnum');
+const totalEl = document.getElementById('total');
+const scoreEl = document.getElementById('score');
+
+totalEl.textContent = QUESTIONS.length;
+
+function renderQuestion(i){
+  const item = QUESTIONS[i];
+  qnumEl.textContent = i+1;
+  qtextEl.textContent = (i+1) + ". " + item.q;
+  choicesEl.innerHTML = '';
+  feedbackEl.innerHTML = '';
+  feedbackEl.className = '';
+  expDetails.style.display = 'none';
+  expDetails.open = false;
+  expText.textContent = '';
+
+  const letters = ['A','B','C','D'];
+
+  item.order.forEach((origIdx, displayIdx) => {
+    const choiceText = item.choices[origIdx];
+    const div = document.createElement('div');
+    div.className = 'choice' + (answers[i]===displayIdx ? ' selected' : '');
+    div.innerHTML = `<span class="label">${letters[displayIdx]}.</span><span>${choiceText}</span>`;
+    div.addEventListener('click', () => selectChoice(displayIdx));
+    choicesEl.appendChild(div);
+  });
+
+  const pct = ((i+1)/QUESTIONS.length)*100;
+  barEl.style.width = pct + '%';
+}
+
+function updateScoreLive(){
+  let correct = 0;
+  QUESTIONS.forEach((q,idx) => {
+    if(answers[idx] !== null && answers[idx] === q.correct) correct++;
+  });
+  scoreEl.textContent = `${correct} / ${QUESTIONS.length}`;
+}
+
+function selectChoice(choiceIdx){
+  answers[current] = choiceIdx;
+  Array.from(choicesEl.children).forEach((el,ci) => {
+    el.classList.toggle('selected', ci === choiceIdx);
+  });
+  showFeedback();
+  updateScoreLive();
+}
+
+function showFeedback(){
+  const item = QUESTIONS[current];
+  const userSel = answers[current];
+  if(userSel === null) return;
+
+  const letters = ['A','B','C','D'];
+  const correctIdx = item.correct;
+  const correctText = item.choices[item.order[correctIdx]];
+  const userText = item.choices[item.order[userSel]];
+
+  Array.from(choicesEl.children).forEach((el,ci) => {
+    el.classList.remove('correct','incorrect');
+    if(ci === correctIdx) el.classList.add('correct');
+    if(ci === userSel && userSel !== correctIdx) el.classList.add('incorrect');
+  });
+
+  if(userSel === correctIdx){
+    feedbackEl.className = 'feedback-correct';
+    feedbackEl.textContent = `Correct — ${letters[userSel]}. ${userText}`;
+  } else {
+    feedbackEl.className = 'feedback-incorrect';
+    feedbackEl.innerHTML = `Incorrect — you: <strong>${letters[userSel]}. ${userText}</strong>; correct: <strong>${letters[correctIdx]}. ${correctText}</strong>`;
+  }
+
+  expText.textContent = item.explain;
+  expDetails.style.display = 'block';
+  expDetails.open = true;
+}
+
+document.getElementById('prev').addEventListener('click', () => {
+  if(current > 0){
+    current--;
+    renderQuestion(current);
+  }
+});
+
+document.getElementById('next').addEventListener('click', () => {
+  if(current < QUESTIONS.length-1){
+    current++;
+    renderQuestion(current);
+  }
+});
+
+document.getElementById('submit').addEventListener('click', () => {
+  if(!confirm('Submit quiz and view final score?')) return;
+  let correct = 0;
+  QUESTIONS.forEach((q,idx) => {
+    if(answers[idx] === q.correct) correct++;
+  });
+  scoreEl.textContent = `${correct} / ${QUESTIONS.length}`;
+  showFeedback();
+});
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  const html = '<!doctype html>\n' + document.documentElement.outerHTML;
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'CompTIA_Printers_Quiz_Interactive.html';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowRight') document.getElementById('next').click();
+  if(e.key === 'ArrowLeft') document.getElementById('prev').click();
+  if(e.key >= '1' && e.key <= '4'){
+    const idxChoice = Number(e.key) - 1;
+    const currentButtons = document.querySelectorAll('.choice');
+    if(currentButtons[idxChoice]) currentButtons[idxChoice].click();
+  }
+});
+
+renderQuestion(0);
+</script>
+</body>
+</html>

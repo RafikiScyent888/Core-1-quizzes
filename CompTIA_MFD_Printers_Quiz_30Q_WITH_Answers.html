@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CompTIA A+ — Multifunction Devices & Printers (Interactive 30Q)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+ body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:20px;display:flex;justify-content:center;background:#0f172a;color:#e5e7eb}
+ .wrap{max-width:900px;width:100%;background:#020617;border-radius:12px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+ h1{margin:0 0 8px 0;color:#f9fafb;font-size:22px}
+ p.lead{margin:0 0 14px 0;color:#9ca3af;font-size:14px}
+ .header-line{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#9ca3af;margin-bottom:10px}
+ .question{font-size:18px;font-weight:bold;margin-bottom:10px}
+ .choices{display:flex;flex-direction:column;gap:8px}
+ .choice{background:#111827;border-radius:8px;padding:10px 12px;border:1px solid rgba(148,163,184,0.25);cursor:pointer;display:flex;gap:8px;align-items:flex-start;transition:transform .15s ease,border-color .15s ease,background .15s ease}
+ .choice:hover{transform:translateY(-2px);border-color:#38bdf8}
+ .choice.selected{border-color:#38bdf8;background:#020617}
+ .choice.correct{border-color:#22c55e}
+ .choice.incorrect{border-color:#ef4444}
+ .label{font-weight:700;min-width:20px}
+ .control{display:flex;gap:10px;margin-top:16px;align-items:center}
+ button{padding:9px 14px;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600}
+ #prev{background:transparent;color:#9ca3af;border:1px solid rgba(148,163,184,0.4)}
+ #next{background:#22c55e;color:#022c22}
+ #submit{background:#0ea5e9;color:#022c22;margin-left:auto}
+ .progress{width:100%;height:10px;background:#111827;border-radius:999px;margin-top:14px;overflow:hidden}
+ .bar{width:0%;height:10px;background:linear-gradient(90deg,#22c55e,#0ea5e9);transition:width .3s ease}
+ .score-line{margin-top:10px;font-size:14px;color:#9ca3af;display:flex;justify-content:space-between;align-items:center}
+ .score-val{font-size:20px;font-weight:800;color:#e5e7eb}
+ .feedback-correct{color:#22c55e;font-size:14px;margin-top:10px}
+ .feedback-incorrect{color:#f97316;font-size:14px;margin-top:10px}
+ details{margin-top:8px;font-size:13px;color:#9ca3af}
+ details summary{cursor:pointer;outline:none}
+ @media(max-width:700px){
+   .wrap{padding:16px}
+   .control{flex-wrap:wrap}
+   #submit{margin-left:0}
+ }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>CompTIA A+ — Multifunction Devices & Printers</h1>
+  <p class="lead">30 multiple-choice questions · shuffled answers · real-time feedback · collapsible explanations.</p>
+
+  <div class="header-line">
+    <div>Question <span id="qnum">1</span> / <span id="total">30</span></div>
+    <div>Score: <span class="score-val" id="score">0 / 30</span></div>
+  </div>
+
+  <div id="quiz">
+    <div class="question" id="qtext">Loading...</div>
+    <div class="choices" id="choices"></div>
+    <div id="feedback"></div>
+    <details id="expDetails" style="display:none">
+      <summary>Show explanation</summary>
+      <div id="expText" style="margin-top:6px"></div>
+    </details>
+  </div>
+
+  <div class="control">
+    <button id="prev">◀ Prev</button>
+    <button id="next">Next ▶</button>
+    <div style="flex:1"></div>
+    <button id="submit">Submit Quiz</button>
+  </div>
+
+  <div class="progress"><div class="bar" id="bar"></div></div>
+</div>
+
+<script>
+const BASE_QUESTIONS = [
+{q:"A laser printer repeatedly produces faint output across the entire page. Which component is MOST likely failing?",
+ a:["Pickup roller","Fuser assembly","Imaging drum","Transfer belt"],
+ c:2,
+ e:"A worn imaging drum cannot maintain a consistent electrostatic charge, causing faint or washed-out prints."},
+
+{q:"Which printer feature allows scanned documents to be delivered directly to email or SMB shares?",
+ a:["Duplexing","Scan-to-network","Secure print","Cloud spooling"],
+ c:1,
+ e:"Scan-to-network enables MFPs to send scanned documents directly to network destinations using SMB or SMTP."},
+
+{q:"A printer leaves toner smears even after replacing the toner cartridge. What is the MOST likely cause?",
+ a:["Dirty fuser rollers","Worn separation pad","Incorrect page orientation","Static discharge"],
+ c:0,
+ e:"If toner smears persist after cartridge replacement, the fuser rollers are likely dirty or damaged."},
+
+{q:"Which maintenance task MOST directly prevents multiple sheets from feeding at once?",
+ a:["Replacing fuser","Cleaning print heads","Replacing separation pad","Updating firmware"],
+ c:2,
+ e:"The separation pad ensures only one sheet is fed at a time."},
+
+{q:"Which connector is MOST commonly used to connect enterprise MFPs directly to a network?",
+ a:["USB-B","RJ-45","Thunderbolt","Serial"],
+ c:1,
+ e:"Enterprise printers typically connect via Ethernet using RJ-45 connectors."},
+
+{q:"Inkjet printers rely on which process to apply ink to paper?",
+ a:["Electrostatic charge","Thermal bubble or piezoelectric","Laser etching","Pressure rollers"],
+ c:1,
+ e:"Inkjet printers spray ink using thermal bubble or piezoelectric technology."},
+
+{q:"Which printer type is BEST suited for multipart forms?",
+ a:["Laser","Inkjet","Thermal","Impact"],
+ c:3,
+ e:"Impact printers physically strike the paper, allowing printing through carbon-copy forms."},
+
+{q:"Vertical lines appear at regular intervals on laser prints. Which component should be inspected FIRST?",
+ a:["Fuser","Drum","Pickup roller","Formatter board"],
+ c:1,
+ e:"Repeating vertical defects usually indicate damage to the imaging drum."},
+
+{q:"Which setting reduces paper usage by printing on both sides automatically?",
+ a:["Collation","Duplex","Orientation","Draft mode"],
+ c:1,
+ e:"Duplex printing automatically prints on both sides of the paper."},
+
+{q:"A network printer prints locally but not from workstations. What is the MOST likely issue?",
+ a:["Bad fuser","Incorrect IP configuration","Empty tray","Worn rollers"],
+ c:1,
+ e:"Incorrect IP or network configuration prevents network printing."},
+
+{q:"Which feature holds print jobs until the user authenticates at the printer?",
+ a:["Secure print","Duplex","Spooling","SNMP"],
+ c:0,
+ e:"Secure print prevents unauthorized access to sensitive documents."},
+
+{q:"Which consumable has the SHORTEST lifespan in a laser printer?",
+ a:["Fuser","Imaging drum","Toner cartridge","Transfer belt"],
+ c:2,
+ e:"Toner cartridges require more frequent replacement than other components."},
+
+{q:"Frequent jams occur at the exit area. Which component is MOST suspect?",
+ a:["Pickup roller","Exit rollers","Separation pad","Formatter"],
+ c:1,
+ e:"Exit rollers guide paper out of the printer and commonly cause exit jams."},
+
+{q:"Which protocol is MOST commonly used to monitor printer status?",
+ a:["FTP","SNMP","SMTP","Telnet"],
+ c:1,
+ e:"SNMP is used for monitoring printer health and consumables."},
+
+{q:"Scan-to-email fails authentication on an MFP. Which setting is MOST likely incorrect?",
+ a:["DNS server","SMTP credentials","Subnet mask","Default gateway"],
+ c:1,
+ e:"Scan-to-email relies on SMTP authentication credentials."},
+
+{q:"Which printer type uses heat-sensitive paper and requires no ink or toner?",
+ a:["Thermal","Inkjet","Laser","Impact"],
+ c:0,
+ e:"Thermal printers use heat-reactive paper."},
+
+{q:"Ghost images appear repeatedly on laser prints. What is the MOST likely cause?",
+ a:["Fuser overheating","Drum not fully discharged","Low toner","Paper humidity"],
+ c:1,
+ e:"If the drum does not fully discharge, previous images can reappear."},
+
+{q:"Which action BEST improves streaking output on an inkjet printer?",
+ a:["Replace fuser","Clean print heads","Replace drum","Adjust duplex"],
+ c:1,
+ e:"Inkjet streaking is commonly caused by clogged print heads."},
+
+{q:"Which paper type is MOST affected by high humidity?",
+ a:["Cardstock","Glossy","Recycled","Plain"],
+ c:2,
+ e:"Recycled paper absorbs moisture more easily, increasing jam risk."},
+
+{q:"A printer pauses frequently when processing large jobs. Which component is MOST limiting performance?",
+ a:["Paper tray","Printer memory","Fuser","Pickup roller"],
+ c:1,
+ e:"Insufficient printer memory slows processing of large print jobs."},
+
+{q:"Which feature allows centralized management of multiple printers?",
+ a:["Cloud printing","Printer pooling","Print server","Secure print"],
+ c:2,
+ e:"Print servers allow centralized control and management of printers."},
+
+{q:"Which issue is MOST associated with worn pickup rollers?",
+ a:["Blank pages","Multiple sheets feeding","Faded output","Skewed images"],
+ c:1,
+ e:"Worn pickup rollers can grab multiple sheets at once."},
+
+{q:"Which printer language is MOST common in enterprise environments?",
+ a:["GDI","PCL","ASCII","PDF"],
+ c:1,
+ e:"PCL is widely used in enterprise laser printers."},
+
+{q:"Incorrect colors appear on a color laser printer. What should be calibrated FIRST?",
+ a:["Drum alignment","Color registration","Fuser calibration","Paper feed calibration"],
+ c:1,
+ e:"Color registration ensures proper alignment of CMYK layers."},
+
+{q:"Which component permanently bonds toner to paper?",
+ a:["Drum","Transfer roller","Fuser","Laser assembly"],
+ c:2,
+ e:"The fuser applies heat and pressure to bond toner."},
+
+{q:"Which feature reduces unauthorized access to stored print jobs?",
+ a:["Secure print","Duplex","Collation","Draft mode"],
+ c:0,
+ e:"Secure print requires user authentication before release."},
+
+{q:"Which connection type allows printer sharing without a network?",
+ a:["Ethernet","Wi-Fi","USB","SNMP"],
+ c:2,
+ e:"USB allows direct sharing without network connectivity."},
+
+{q:"Wrinkled pages exit a laser printer. Which component is MOST likely faulty?",
+ a:["Pickup roller","Fuser","Formatter","Drum"],
+ c:1,
+ e:"A failing fuser can overheat or unevenly heat paper, causing wrinkles."},
+
+{q:"Which maintenance component usually has the LONGEST replacement interval?",
+ a:["Pickup rollers","Fuser","Separation pad","Toner"],
+ c:1,
+ e:"Fusers typically last much longer than rollers or toner."},
+
+{q:"Which symptom MOST strongly indicates low toner?",
+ a:["Repeating defects","Faded output","Vertical lines","Ghosting"],
+ c:1,
+ e:"Low toner commonly causes faded or light prints."}
+];
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+let QUESTIONS = BASE_QUESTIONS.map(q => {
+  const order = shuffle([0,1,2,3]);
+  const correctDisplayIndex = order.indexOf(q.c);
+  return {
+    q: q.q,
+    choices: q.a,
+    order,
+    correct: correctDisplayIndex,
+    explain: q.e
+  };
+});
+
+let current = 0;
+let answers = Array(QUESTIONS.length).fill(null);
+
+const qtextEl = document.getElementById('qtext');
+const choicesEl = document.getElementById('choices');
+const feedbackEl = document.getElementById('feedback');
+const expDetails = document.getElementById('expDetails');
+const expText = document.getElementById('expText');
+const barEl = document.getElementById('bar');
+const qnumEl = document.getElementById('qnum');
+const totalEl = document.getElementById('total');
+const scoreEl = document.getElementById('score');
+
+totalEl.textContent = QUESTIONS.length;
+
+function renderQuestion(i){
+  const item = QUESTIONS[i];
+  qnumEl.textContent = i+1;
+  qtextEl.textContent = (i+1) + ". " + item.q;
+  choicesEl.innerHTML = '';
+  feedbackEl.innerHTML = '';
+  feedbackEl.className = '';
+  expDetails.style.display = 'none';
+  expDetails.open = false;
+  expText.textContent = '';
+
+  const letters = ['A','B','C','D'];
+
+  item.order.forEach((origIdx, displayIdx) => {
+    const choiceText = item.choices[origIdx];
+    const div = document.createElement('div');
+    div.className = 'choice' + (answers[i]===displayIdx ? ' selected' : '');
+    div.innerHTML = `<span class="label">${letters[displayIdx]}.</span><span>${choiceText}</span>`;
+    div.addEventListener('click', () => selectChoice(displayIdx));
+    choicesEl.appendChild(div);
+  });
+
+  const pct = ((i+1)/QUESTIONS.length)*100;
+  barEl.style.width = pct + '%';
+}
+
+function updateScoreLive(){
+  let correct = 0;
+  QUESTIONS.forEach((q,idx) => {
+    if(answers[idx] !== null && answers[idx] === q.correct) correct++;
+  });
+  scoreEl.textContent = `${correct} / ${QUESTIONS.length}`;
+}
+
+function selectChoice(choiceIdx){
+  answers[current] = choiceIdx;
+  Array.from(choicesEl.children).forEach((el,ci) => {
+    el.classList.toggle('selected', ci === choiceIdx);
+  });
+  showFeedback();
+  updateScoreLive();
+}
+
+function showFeedback(){
+  const item = QUESTIONS[current];
+  const userSel = answers[current];
+  if(userSel === null) return;
+
+  const letters = ['A','B','C','D'];
+  const correctIdx = item.correct;
+  const correctText = item.choices[item.order[correctIdx]];
+  const userText = item.choices[item.order[userSel]];
+
+  Array.from(choicesEl.children).forEach((el,ci) => {
+    el.classList.remove('correct','incorrect');
+    if(ci === correctIdx) el.classList.add('correct');
+    if(ci === userSel && userSel !== correctIdx) el.classList.add('incorrect');
+  });
+
+  if(userSel === correctIdx){
+    feedbackEl.className = 'feedback-correct';
+    feedbackEl.textContent = `Correct — ${letters[userSel]}. ${userText}`;
+  } else {
+    feedbackEl.className = 'feedback-incorrect';
+    feedbackEl.innerHTML = `Incorrect — you: <strong>${letters[userSel]}. ${userText}</strong>; correct: <strong>${letters[correctIdx]}. ${correctText}</strong>`;
+  }
+
+  expText.textContent = item.explain;
+  expDetails.style.display = 'block';
+  expDetails.open = true;
+}
+
+document.getElementById('prev').addEventListener('click', () => {
+  if(current > 0){
+    current--;
+    renderQuestion(current);
+  }
+});
+
+document.getElementById('next').addEventListener('click', () => {
+  if(current < QUESTIONS.length-1){
+    current++;
+    renderQuestion(current);
+  }
+});
+
+document.getElementById('submit').addEventListener('click', () => {
+  if(!confirm('Submit quiz and view final score?')) return;
+  let correct = 0;
+  QUESTIONS.forEach((q,idx) => {
+    if(answers[idx] === q.correct) correct++;
+  });
+  scoreEl.textContent = `${correct} / ${QUESTIONS.length}`;
+  showFeedback();
+});
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowRight') document.getElementById('next').click();
+  if(e.key === 'ArrowLeft') document.getElementById('prev').click();
+  if(e.key >= '1' && e.key <= '4'){
+    const idxChoice = Number(e.key) - 1;
+    const currentButtons = document.querySelectorAll('.choice');
+    if(currentButtons[idxChoice]) currentButtons[idxChoice].click();
+  }
+});
+
+renderQuestion(0);
+</script>
+</body>
+</html>

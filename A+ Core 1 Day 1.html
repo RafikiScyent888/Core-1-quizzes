@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CompTIA — IT Specialist, Troubleshooting Methodology & Mobile Devices — 35 Q Quiz</title>
+<style>
+:root{--bg:#071021;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8}
+*{box-sizing:border-box}
+body{font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(180deg,#04111a 0%,#071021 100%);color:#e6eef6;margin:0;padding:24px;display:flex;justify-content:center}
+.wrap{max-width:980px;width:100%}
+h1{margin:0 0 8px 0;font-size:20px}
+.meta{color:var(--muted);font-size:13px;margin-bottom:14px}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;box-shadow:0 8px 32px rgba(2,6,23,0.6)}
+.question{display:grid;grid-template-columns:1fr 260px;gap:14px}
+.choices{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.choice{background:#071022;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);cursor:pointer;transition:transform .15s ease,border-color .15s ease}
+.choice:hover{transform:translateY(-3px)}
+.choice.selected{outline:2px solid var(--accent)}
+.choice.correct{border-color:#16a34a}
+.choice.incorrect{border-color:#ef4444}
+.controls{display:flex;gap:8px;align-items:center;margin-top:12px}
+button{background:var(--accent);color:#042027;border:0;padding:10px 12px;border-radius:8px;font-weight:700;cursor:pointer}
+button.ghost{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04)}
+.progress{height:10px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden;margin-top:12px}
+.bar{height:10px;background:linear-gradient(90deg,var(--accent),#7c3aed);width:0%;transition:width .3s ease}
+aside{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));padding:12px;border-radius:8px}
+.score{font-size:28px;font-weight:800}
+.footer{display:flex;gap:8px;margin-top:12px}
+.download{background:transparent;color:var(--accent);border:1px dashed rgba(6,182,212,0.18);padding:8px;border-radius:8px;cursor:pointer}
+.feedback-correct{color:#16a34a}
+.feedback-incorrect{color:#ef4444}
+@media(max-width:880px){.question{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>CompTIA — IT Specialist, Troubleshooting Methodology & Mobile Devices — 35 Questions</h1>
+  <div class="meta">Interactive quiz with shuffled answers, real-time feedback, collapsible explanations, and downloadable single-file HTML.</div>
+  <div class="card">
+    <div class="question" id="qwrap">
+      <div>
+        <div id="qtext" style="font-weight:700">Loading...</div>
+        <div class="choices" id="choices"></div>
+        <div class="controls">
+          <button id="prev" class="ghost">◀ Prev</button>
+          <button id="next">Next ▶</button>
+          <div style="flex:1"></div>
+          <button id="submit">Submit Quiz</button>
+        </div>
+        <div class="progress"><div class="bar" id="bar"></div></div>
+      </div>
+
+      <aside>
+        <div>Question <strong id="qnum">0</strong> / 35</div>
+        <div style="height:12px"></div>
+        <div class="score" id="score">—</div>
+        <div class="meta" style="margin-top:8px">Select an answer to see instant feedback. Explanations are collapsible.</div>
+        <div id="resultBox" style="display:none;margin-top:8px">
+          <div id="resultText"></div>
+          <details id="expDetails" style="margin-top:8px">
+            <summary style="cursor:pointer;color:var(--muted);font-size:13px">Show explanation</summary>
+            <div id="expText" style="font-size:13px;color:var(--muted);margin-top:6px"></div>
+          </details>
+        </div>
+        <div class="footer">
+          <button id="restart" class="ghost">Restart</button>
+          <button id="download" class="download">Download HTML file</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+<script>
+// Base questions (unchanged content)
+const BASE_QUESTIONS = [
+{q:"What is the first step in the CompTIA troubleshooting methodology?",choices:["Establish a theory of probable cause","Document findings","Identify the problem","Test the theory to determine cause"],a:2,explain:"Identifying the problem comes first (ask questions, gather info)."},
+{q:"Which action is part of 'establish a theory' step?",choices:["Create a baseline","Check for recent changes","Apply a permanent fix","Close ticket"],a:1,explain:"Checking recent changes helps form a theory of cause."},
+{q:"When should you implement a solution to confirm functionality?",choices:["Before establishing theory","After testing in a non-production environment if possible","Without documentation","Only after replacement"],a:1,explain:"Test solutions in a controlled environment before permanent deployment when possible."},
+{q:"Which is a non-technical skill important for IT specialists?",choices:["Soldering","Active listening","Overclocking","PCB repair"],a:1,explain:"Active listening is crucial for accurate info gathering and customer service."},
+{q:"What does MTTR stand for in troubleshooting metrics?",choices:["Mean Time To Repair","Maximum Time To Respond","Mean Time To Reboot","Minimum Time To Resolve"],a:0,explain:"MTTR = Mean Time To Repair, a reliability metric."},
+{q:"If a mobile device won't power on, what's a basic early check?",choices:["Replace screen","Verify battery charge and power button","Reinstall OS","Replace antenna"],a:1,explain:"Always check power/charging before deeper diagnostics."},
+{q:"Which wireless standard operates in the 2.4GHz band and is common for mobile hotspots?",choices:["802.11ac","802.11ax","802.11b/g/n","802.11ad"],a:2,explain:"802.11b/g/n operate in 2.4GHz; n can use both 2.4 and 5GHz."},
+{q:"What is IMEI used for on mobile devices?",choices:["Identifying device on cellular networks","Encrypting storage","Managing apps","Controlling brightness"],a:0,explain:"IMEI uniquely identifies a cellular device on networks."},
+{q:"Which mobile OS is open-source and widely forked by manufacturers?",choices:["iOS","Android","Windows Mobile","BlackBerry OS"],a:1,explain:"Android is based on open-source AOSP and often customized."},
+{q:"What should you do before replacing hardware on a laptop?",choices:["Skip documentation","Back up user data and create recovery media","Immediately power down without notice","Remove warranty stickers"],a:1,explain:"Backup data and prepare recovery media to prevent data loss."},
+{q:"Which tool helps view live logs on Android devices for troubleshooting?",choices:["iTunes","ADB (Android Debug Bridge)","Xcode","Device Manager"],a:1,explain:"ADB provides access to logs and shell on Android devices."},
+{q:"A user reports slow performance after installing new software. Best initial step?",choices:["Reimage machine","Check resource usage (Task Manager) and recent changes","Replace HDD","Reinstall OS"],a:1,explain:"Check resource usage and recent installs to find cause."},
+{q:"What is a common cause of app crashes on mobile devices?",choices:["Outdated app or OS incompatibility","Broken screen","Bad Wi-Fi cable","Low monitor brightness"],a:0,explain:"Version mismatches and bugs often cause crashes."},
+{q:"Which security technique helps prevent unauthorized access if a mobile device is lost?",choices:["Disable lock screen","Remote wipe and strong authentication","Keep Bluetooth on","Store passwords in plain text"],a:1,explain:"Remote wipe and strong auth protect data on lost devices."},
+{q:"When documenting a troubleshooting session, you should:",choices:["Only save the final result","Record steps taken, findings, and resolution","Erase logs","Only note the time"],a:1,explain:"Complete documentation helps future troubleshooting and auditing."},
+{q:"What does 'isolation' mean in troubleshooting?",choices:["Adding more users","Separating variables to identify cause","Deleting system files","Increasing network speed"],a:1,explain:"Isolate components to determine which causes the issue."},
+{q:"A mobile device connects to Wi‑Fi but has no internet. First check:",choices:["Replace screen","Verify network gateway and DNS settings","Reset display brightness","Update BIOS"],a:1,explain:"Check router/gateway and DNS to confirm upstream connectivity."},
+{q:"Which backup method saves only changed blocks since last backup?",choices:["Full backup","Differential backup","Incremental (or block-level incremental)","Manual copy"],a:2,explain:"Incremental backups save changed blocks for efficiency."},
+{q:"What is the purpose of a service tag or serial number?",choices:["To identify device for support and warranty","To speed up CPU","To control screen brightness","To encrypt disk"],a:0,explain:"Service tags help vendors identify device model/config for support."},
+{q:"Which mobile network technology offers the highest data rates among these?",choices:["2G","3G","4G LTE","GSM"],a:2,explain:"4G LTE provides high-speed mobile data compared to 3G/2G."},
+{q:"Which step should you take if a user's data may be lost during troubleshooting?",choices:["Proceed without warning","Back up the data and get consent","Ignore backups","Replace hardware immediately"],a:1,explain:"Always back up and inform the user before risky actions."},
+{q:"A tablet's touchscreen is unresponsive. Which is a reasonable first step?",choices:["Replace touchscreen","Restart the device and check for debris or screen protectors","Reflash firmware","Replace battery"],a:1,explain:"Soft reset and physical inspection are non-invasive first steps."},
+{q:"What does escalation mean in IT support?",choices:["Closing the ticket","Handing issue to higher-level support or vendor","Ignoring user","Formatting drive"],a:1,explain:"Escalation routes complex issues to more experienced teams."},
+{q:"Which battery maintenance tip improves mobile device longevity?",choices:["Keep battery at 100% constantly","Avoid extreme temperatures and use proper charging habits","Fully discharge daily","Use only unbranded chargers"],a:1,explain:"Avoid extremes and follow recommended charging practices."},
+{q:"What is a common symptom of insufficient RAM on a workstation?",choices:["Excessive paging and slow multitasking","Faster boot times","Brighter monitor","No network"],a:0,explain:"Low RAM causes swapping and degraded performance."},
+{q:"When troubleshooting intermittent problems, a useful approach is to:",choices:["Wait for it to stop","Attempt to reproduce the issue and capture logs during occurrence","Reset to factory defaults immediately","Replace all hardware"],a:1,explain:"Reproducing and logging helps identify intermittent causes."},
+{q:"Which protocol is commonly used to sync email on mobile devices?",choices:["FTP","SMTP/IMAP/POP (IMAP is common for sync)","SSH","SNMP"],a:1,explain:"IMAP is used for syncing mail; SMTP handles sending."},
+{q:"What should you verify when a mobile device cannot send MMS?",choices:["Screen resolution","Cellular data and APN settings","Battery health","Bluetooth pairing"],a:1,explain:"MMS requires cellular data and correct APN configuration."},
+{q:"A peer-to-peer connectivity issue between phones (e.g., AirDrop) — first step?",choices:["Replace device","Check Bluetooth/Wi-Fi and visibility settings","Update BIOS","Replace SIM"],a:1,explain:"These services require wireless radios and visibility enabled."},
+{q:"Which action is part of 'implement the solution' in methodology?",choices:["Document only","Apply the fix and verify operation","Escalate without trying","Delete user account"],a:1,explain:"Apply the fix, then test to ensure issue resolved."},
+{q:"Why is maintaining a knowledge base important?",choices:["To store music","To preserve tribal knowledge and speed future fixes","To slow down support","To encrypt data"],a:1,explain:"Knowledge bases capture solutions for reuse and training."},
+{q:"If a mobile device overheats, what should you advise the user to do first?",choices:["Place in freezer","Close apps, remove case, stop charging, and move to cool area","Update firmware","Replace battery immediately"],a:1,explain:"Non-invasive steps reduce heat safely."},
+{q:"Which mobile troubleshooting tool can provide battery health and usage data on iOS?",choices:["Android Studio","iTunes","iOS Settings battery section","Task Manager"],a:2,explain:"iOS Settings show battery usage and health metrics."},
+{q:"Final step in troubleshooting methodology after verifying resolution is:",choices:["Document findings and close the ticket","Ignore the issue","Reopen the ticket","Replace hardware"],a:0,explain:"Documenting and closing the loop is essential for records and learning."}
+];
+
+// Shuffle helper
+function shuffleArray(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+// Build quiz questions with shuffled answer positions
+let quizQuestions = BASE_QUESTIONS.map(q => {
+  const order = shuffleArray([0,1,2,3]); // display order of choices
+  const correctDisplayIndex = order.indexOf(q.a);
+  return {
+    ...q,
+    order,
+    correct: correctDisplayIndex
+  };
+});
+
+let index = 0;
+let answers = Array(quizQuestions.length).fill(null);
+
+// DOM refs
+const qtext = document.getElementById('qtext');
+const choicesEl = document.getElementById('choices');
+const qnum = document.getElementById('qnum');
+const bar = document.getElementById('bar');
+const scoreEl = document.getElementById('score');
+const resultBox = document.getElementById('resultBox');
+const resultText = document.getElementById('resultText');
+const expDetails = document.getElementById('expDetails');
+const expText = document.getElementById('expText');
+
+function renderQuestion(i){
+  const item = quizQuestions[i];
+  qnum.textContent = (i + 1);
+  qtext.textContent = item.q;
+  choicesEl.innerHTML = '';
+  const letters = ['A','B','C','D'];
+
+  item.order.forEach((origIdx, displayIdx) => {
+    const c = item.choices[origIdx];
+    const d = document.createElement('div');
+    d.className = 'choice';
+    d.tabIndex = 0;
+    d.innerHTML = `<div style="font-weight:600">${letters[displayIdx]}. ${c}</div>`;
+    if(answers[i] === displayIdx) d.classList.add('selected');
+    d.addEventListener('click', () => select(i, displayIdx));
+    d.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' ') select(i, displayIdx);
+    });
+    choicesEl.appendChild(d);
+  });
+
+  bar.style.width = Math.round((i / (quizQuestions.length - 1)) * 100) + '%';
+  resultBox.style.display = 'none';
+  expDetails.open = false;
+  expText.textContent = '';
+}
+
+function updateScoreLive(){
+  let correct = 0;
+  quizQuestions.forEach((q, i) => {
+    if(answers[i] !== null && answers[i] === q.correct) correct++;
+  });
+  scoreEl.textContent = `${correct} / ${quizQuestions.length}`;
+}
+
+function select(qIdx, choiceIdx){
+  answers[qIdx] = choiceIdx;
+  Array.from(choicesEl.children).forEach((el,ci) => el.classList.toggle('selected', ci === choiceIdx));
+  showFeedback(qIdx);
+  updateScoreLive();
+}
+
+function showFeedback(qIdx){
+  const item = quizQuestions[qIdx];
+  const userSel = answers[qIdx];
+  if(userSel === null) return;
+
+  const letters = ['A','B','C','D'];
+  const correctIdx = item.correct;
+  const correctText = item.choices[item.order[correctIdx]];
+  const userText = item.choices[item.order[userSel]];
+
+  let html = '';
+  if(userSel === correctIdx){
+    html += `<div class="feedback-correct">Correct — ${letters[userSel]}. ${userText}</div>`;
+  } else {
+    html += `<div class="feedback-incorrect">Incorrect — you: <strong>${letters[userSel]}. ${userText}</strong>; correct: <strong>${letters[correctIdx]}. ${correctText}</strong></div>`;
+  }
+
+  resultText.innerHTML = html;
+  expText.textContent = item.explain;
+  resultBox.style.display = 'block';
+  expDetails.open = true;
+
+  annotateCurrent();
+}
+
+function annotateCurrent(){
+  const cur = quizQuestions[index];
+  Array.from(choicesEl.children).forEach((el,ci) => {
+    el.classList.remove('correct','incorrect');
+    if(ci === cur.correct) el.classList.add('correct');
+    if(answers[index] !== null && ci === answers[index] && answers[index] !== cur.correct){
+      el.classList.add('incorrect');
+    }
+  });
+}
+
+document.getElementById('next').addEventListener('click', () => {
+  if(index < quizQuestions.length - 1){
+    index++;
+    renderQuestion(index);
+  }
+});
+
+document.getElementById('prev').addEventListener('click', () => {
+  if(index > 0){
+    index--;
+    renderQuestion(index);
+  }
+});
+
+document.getElementById('submit').addEventListener('click', () => {
+  if(!confirm('Submit quiz and view final score?')) return;
+  grade();
+});
+
+function grade(){
+  let correct = 0;
+  quizQuestions.forEach((it, i) => {
+    if(answers[i] === it.correct) correct++;
+  });
+  scoreEl.textContent = `${correct} / ${quizQuestions.length}`;
+
+  // Also refresh feedback for current question so user sees something after submit
+  showFeedback(index);
+}
+
+document.getElementById('restart').addEventListener('click', () => {
+  if(confirm('Restart quiz? This will clear your answers and reshuffle choices.')){
+    answers = Array(quizQuestions.length).fill(null);
+    // reshuffle answer positions for each question
+    quizQuestions = BASE_QUESTIONS.map(q => {
+      const order = shuffleArray([0,1,2,3]);
+      const correctDisplayIndex = order.indexOf(q.a);
+      return {
+        ...q,
+        order,
+        correct: correctDisplayIndex
+      };
+    });
+    index = 0;
+    scoreEl.textContent = '—';
+    renderQuestion(0);
+  }
+});
+
+// Download
+document.getElementById('download').addEventListener('click', () => {
+  const html = '<!doctype html>\n' + document.documentElement.outerHTML;
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'CompTIA_IT_Troubleshooting_Mobile_Quiz_Shuffled.html';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+// keyboard nav
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowRight') document.getElementById('next').click();
+  if(e.key === 'ArrowLeft') document.getElementById('prev').click();
+  if(e.key >= '1' && e.key <= '4'){
+    const idxChoice = Number(e.key) - 1;
+    const currentButtons = document.querySelectorAll('.choice');
+    if(currentButtons[idxChoice]) currentButtons[idxChoice].click();
+  }
+});
+
+// init
+renderQuestion(0);
+</script>
+</body>
+</html>

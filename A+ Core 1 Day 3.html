@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CompTIA — Motherboards, CPUs, BIOS & UEFI — 35 Q Quiz</title>
+  <style>
+    :root{--bg:#071021;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8}
+    *{box-sizing:border-box}
+    body{
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      background:linear-gradient(180deg,#04111a 0%,#071021 100%);
+      color:#e6eef6;margin:0;padding:24px;
+      display:flex;justify-content:center
+    }
+    .wrap{max-width:980px;width:100%}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    h1{font-size:20px;margin:0}
+    .meta{color:var(--muted);font-size:13px}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;padding:18px;
+      box-shadow:0 6px 24px rgba(2,6,23,0.6)
+    }
+    .question{display:grid;grid-template-columns:1fr 240px;gap:12px;align-items:start}
+    .qtext{font-weight:700;margin-bottom:8px}
+    .choices{display:flex;flex-direction:column;gap:10px}
+    .choice{
+      background:#071022;border-radius:8px;padding:10px;
+      border:1px solid rgba(255,255,255,0.03);
+      cursor:pointer;transition:transform .15s ease,border-color .15s ease
+    }
+    .choice:hover{transform:translateY(-3px)}
+    .choice.selected{outline:2px solid var(--accent)}
+    .choice.correct{border-color:#16a34a}
+    .choice.incorrect{border-color:#ef4444}
+    .controls{display:flex;gap:8px;align-items:center;margin-top:14px}
+    button{
+      background:var(--accent);color:#042027;border:0;
+      padding:10px 12px;border-radius:8px;
+      font-weight:700;cursor:pointer
+    }
+    button.ghost{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04)}
+    .progress{height:10px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden;margin-top:12px}
+    .bar{height:10px;background:linear-gradient(90deg,var(--accent),#7c3aed);width:0%;transition:width .3s ease}
+    .side{
+      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+      padding:12px;border-radius:8px
+    }
+    .score{font-size:28px;font-weight:800}
+    .feedback-correct{color:#16a34a;font-size:14px;margin-top:6px}
+    .feedback-incorrect{color:#ef4444;font-size:14px;margin-top:6px}
+    details{
+      margin-top:8px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    details summary{
+      cursor:pointer;
+      color:var(--muted);
+      outline:none;
+    }
+    footer{display:flex;gap:8px;align-items:center;margin-top:12px}
+    .download{
+      background:transparent;color:var(--accent);
+      border:1px dashed rgba(6,182,212,0.18);
+      padding:8px;border-radius:8px;cursor:pointer
+    }
+    @media(max-width:880px){.question{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>CompTIA — Motherboards, CPUs, BIOS &amp; UEFI — 35 Questions</h1>
+        <div class="meta">Interactive quiz · shuffled answers · real-time feedback · collapsible explanations</div>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <div class="meta">Questions: <strong>35</strong></div>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="question" id="qwrap">
+        <div>
+          <div class="qtext" id="qtext">Loading...</div>
+          <div class="choices" id="choices"></div>
+          <div id="feedback"></div>
+
+          <details id="expDetails" style="display:none">
+            <summary>Show explanation</summary>
+            <div id="expText" style="margin-top:6px"></div>
+          </details>
+
+          <div class="controls">
+            <button id="prev" class="ghost">◀ Prev</button>
+            <button id="next">Next ▶</button>
+            <div style="flex:1"></div>
+            <button id="submit">Submit Quiz</button>
+          </div>
+
+          <div style="margin-top:12px">
+            <div class="progress"><div class="bar" id="bar"></div></div>
+          </div>
+        </div>
+
+        <aside class="side">
+          <div>Question <strong id="qnum">0</strong> / 35</div>
+          <div style="height:12px"></div>
+          <div class="score" id="score">—</div>
+          <div class="meta" style="margin-top:6px">Score updates as you answer. Explanations expand per question.</div>
+          <footer>
+            <button id="restart" class="ghost">Restart</button>
+            <button id="download" class="download">Download HTML</button>
+          </footer>
+        </aside>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;color:var(--muted);font-size:13px">
+      Tip: answer positions are shuffled each time you load or restart this quiz.
+    </div>
+  </div>
+
+  <script>
+    const BASE_QUESTIONS = [
+      { q: "What component on the motherboard holds the CPU?", choices: ["PCIe slot","CPU socket","RAM slot","SATA port"], a: 1, explain: "The CPU socket is the physical interface where the processor is installed." },
+      { q: "Which chipset component traditionally handled lower-speed I/O (older architecture)?", choices: ["Northbridge","Southbridge","VRM","BIOS chip"], a: 1, explain: "The southbridge managed lower-speed peripherals in older two-chip chipset designs." },
+      { q: "What does BIOS stand for?", choices: ["Basic Input/Output System","Binary Internal Operating System","Basic Internal Output System","Base IO Sequence"], a: 0, explain: "BIOS stands for Basic Input/Output System and provides firmware-level initialization." },
+      { q: "What is UEFI primarily used for?", choices: ["Providing a modern firmware interface and boot services","Cooling the CPU","Routing network packets","Rendering graphics"], a: 0, explain: "UEFI replaces legacy BIOS, offering modern features like GUI menus and GPT support." },
+      { q: "Which slot is commonly used for modern discrete graphics cards?", choices: ["PCIe x16","AGP","PCI","ISA"], a: 0, explain: "PCI Express x16 is the standard slot for modern GPUs." },
+
+      { q: "What does CMOS battery keep powered when the PC is off?", choices: ["CPU cores","BIOS settings and real-time clock","RAM contents","GPU firmware"], a: 1, explain: "The CMOS battery preserves BIOS/UEFI settings and the real-time clock when the system is powered off." },
+      { q: "What is the purpose of the motherboard's VRM?", choices: ["Regulate and deliver power to the CPU","Store BIOS settings","Control fan speed","Manage SATA ports"], a: 0, explain: "VRMs convert PSU power to the voltages the CPU and other components need." },
+      { q: "Which socket type is associated with many AMD mainstream desktop CPUs (recent generations)?", choices: ["LGA 1151","AM4","LGA 1700","TR4"], a: 1, explain: "AM4 is AMD's mainstream socket for many Ryzen generations." },
+      { q: "What is POST?", choices: ["Power-On Self Test — hardware checks at boot","Primary Output Sequence","Peripheral Operating System Test","Power Off Suspend Test"], a: 0, explain: "POST runs hardware checks and initializations during system startup." },
+      { q: "Which BIOS/UEFI feature helps prevent unsigned OS loaders from booting?", choices: ["Fast Boot","Secure Boot","VT-x","XMP"], a: 1, explain: "Secure Boot verifies signatures to block unauthorized bootloaders." },
+
+      { q: "Which CPU feature lets a core handle two threads simultaneously (Intel branding)?", choices: ["Turbo Boost","Hyper-Threading","Cool'n'Quiet","SpeedStep"], a: 1, explain: "Hyper-Threading exposes logical cores to the OS, allowing simultaneous multithreading." },
+      { q: "What is the smallest and fastest level of CPU cache?", choices: ["L3","L2","L1","L4"], a: 2, explain: "L1 cache is closest to the core and is the smallest and fastest." },
+      { q: "If upgrading a CPU, what is essential to check for compatibility?", choices: ["Case color","CPU socket type and supported chipset/BIOS","Monitor size","Keyboard layout"], a: 1, explain: "CPU socket type and chipset/BIOS compatibility determine whether a CPU will work on a board." },
+      { q: "What does \"flashing the BIOS\" mean?", choices: ["Updating the motherboard firmware stored in flash memory","Replacing the CMOS battery","Removing the BIOS chip","Formatting the boot drive"], a: 0, explain: "Flashing updates firmware to add features or CPU support or fix bugs." },
+      { q: "Which UEFI capability supports large drives and modern partitioning?", choices: ["MBR","GPT","FAT16","NTFS"], a: 1, explain: "GPT allows drives >2TB and more partitions; UEFI supports GPT." },
+
+      { q: "What does the motherboard form factor describe?", choices: ["CPU frequency","Physical dimensions, mounting points and I/O layout","Amount of RAM","GPU power"], a: 1, explain: "Form factor (ATX, micro-ATX, Mini-ITX) defines size and connector placement." },
+      { q: "Which connector provides the main 24-pin power to the motherboard?", choices: ["Molex 4-pin","ATX 24-pin","EPS 8-pin","SATA power"], a: 1, explain: "The ATX 24-pin is the main power connector from the PSU to the motherboard." },
+      { q: "Which BIOS setting would you change to set boot order?", choices: ["Boot Priority/Boot Order","CPU multiplier","Memory timings","Fan curve"], a: 0, explain: "Boot order determines which device the firmware attempts to boot from first." },
+      { q: "What does \"thermal throttling\" do?", choices: ["Increase CPU speed when cool","Reduce CPU speed to avoid overheating","Reset BIOS","Improve graphics quality"], a: 1, explain: "Thermal throttling lowers clock speeds to reduce temperature and prevent damage." },
+      { q: "Which tool helps identify POST beep codes?", choices: ["Motherboard manual","GPU driver software","Antivirus program","Word processor"], a: 0, explain: "POST beep codes are documented in the motherboard manual or vendor documentation." },
+
+      { q: "What is the role of the chipset on a motherboard?", choices: ["Manage communication between CPU, memory and peripherals","Supply monitor signal","Store user files","Control Wi-Fi only"], a: 0, explain: "The chipset coordinates data flow between CPU, RAM, storage and I/O." },
+      { q: "If a system will not boot and shows a red LED on the motherboard, you should check:", choices: ["The thermostat","CPU seating, RAM seating, and power connections","Printer status","External monitor settings"], a: 1, explain: "Red diagnostic LEDs often indicate component seating or power issues to check first." },
+      { q: "What is \"BIOS reset\" by removing the CMOS battery intended to do?", choices: ["Clear stored BIOS settings and return to defaults","Increase CPU voltage","Improve disk speed","Change GPU clock"], a: 0, explain: "Removing the CMOS battery resets firmware settings to defaults." },
+      { q: "Which interface is used by many modern SSDs for highest performance?", choices: ["SATA III","M.2 NVMe (PCIe)","IDE","Parallel ATA"], a: 1, explain: "M.2 NVMe uses PCIe lanes to achieve much higher bandwidth than SATA." },
+      { q: "Which feature in UEFI can provide a graphical mouse-driven setup?", choices: ["Text-only BIOS only","UEFI firmware with GUI support","Legacy BIOS memory","CMOS jumper"], a: 1, explain: "UEFI can provide graphical interfaces and mouse support unlike legacy BIOS." },
+
+      { q: "What does \"BIOS microcode update\" typically add?", choices: ["Support for new CPUs and bug fixes","Larger monitor resolution","Faster RAM speeds by default","Increased hard drive capacity"], a: 0, explain: "Microcode updates add CPU compatibility and fix processor-level bugs." },
+      { q: "Which power connector is commonly needed specifically for the CPU?", choices: ["24-pin ATX only","8-pin EPS/CPU power","SATA power","Molex"], a: 1, explain: "EPS (4+4 or 8-pin) supplies additional 12V power to the CPU." },
+      { q: "What is the purpose of \"Secure Boot\" when enabled?", choices: ["Prevent unsigned bootloaders from running","Improve audio quality","Speed up the hard disk","Disable USB ports"], a: 0, explain: "Secure Boot validates bootloader signatures to help prevent unauthorized code at startup." },
+      { q: "Which BIOS option might you configure when installing a new OS to support GPT and UEFI boot?", choices: ["Enable UEFI mode and disable legacy/CSM","Enable legacy only","Enable overclocking","Disable SATA"], a: 0, explain: "To boot GPT/UEFI systems you should enable UEFI mode and disable legacy compatibility mode." },
+
+      { q: "Which component tracks time and date when the system is off?", choices: ["CMOS/Real-time clock powered by the battery","CPU cache","Power supply LEDs","GPU fan controller"], a: 0, explain: "The RTC keeps time even when power is off; the CMOS battery powers it." },
+      { q: "Which motherboard feature helps when a BIOS update fails (recovery)?", choices: ["Dual BIOS or BIOS recovery procedure","Faster RAM","Larger case","More SATA ports"], a: 0, explain: "Many boards include recovery or dual-BIOS to restore firmware after a failed update." },
+      { q: "Which expansion slot is legacy and rarely found on modern boards?", choices: ["AGP","PCIe","M.2","NVMe"], a: 0, explain: "AGP was an older graphics slot replaced by PCIe." }
+    ];
+
+    function shuffleArray(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
+    }
+
+    let quizQuestions = BASE_QUESTIONS.map(q => {
+      const order = shuffleArray([0,1,2,3]);
+      const correctDisplayIndex = order.indexOf(q.a);
+      return {
+        ...q,
+        order,
+        correct: correctDisplayIndex
+      };
+    });
+
+    let index = 0;
+    let answers = new Array(quizQuestions.length).fill(null);
+
+    const qtext = document.getElementById('qtext');
+    const choicesEl = document.getElementById('choices');
+    const qnum = document.getElementById('qnum');
+    const bar = document.getElementById('bar');
+    const scoreEl = document.getElementById('score');
+    const feedbackEl = document.getElementById('feedback');
+    const expDetails = document.getElementById('expDetails');
+    const expText = document.getElementById('expText');
+
+    function renderQuestion(i){
+      const item = quizQuestions[i];
+      qnum.textContent = (i+1);
+      qtext.textContent = item.q;
+      choicesEl.innerHTML = '';
+      feedbackEl.innerHTML = '';
+      feedbackEl.className = '';
+      expDetails.style.display = 'none';
+      expDetails.open = false;
+      expText.textContent = '';
+
+      const letters = ['A','B','C','D'];
+
+      item.order.forEach((origIdx, displayIdx) => {
+        const c = item.choices[origIdx];
+        const d = document.createElement('div');
+        d.className = 'choice';
+        d.tabIndex = 0;
+        d.innerHTML = '<div style="font-weight:600">' + letters[displayIdx] + '. ' + c + '</div>';
+        if(answers[i] === displayIdx) d.classList.add('selected');
+        d.addEventListener('click', () => select(i, displayIdx));
+        d.addEventListener('keydown', e => {
+          if(e.key === 'Enter' || e.key === ' ') select(i, displayIdx);
+        });
+        choicesEl.appendChild(d);
+      });
+
+      bar.style.width = Math.round((i / (quizQuestions.length - 1)) * 100) + '%';
+    }
+
+    function updateScoreLive(){
+      let correct = 0;
+      quizQuestions.forEach((q,i) => {
+        if(answers[i] !== null && answers[i] === q.correct) correct++;
+      });
+      scoreEl.textContent = correct + ' / ' + quizQuestions.length;
+    }
+
+    function select(qIdx, choiceIdx){
+      answers[qIdx] = choiceIdx;
+      Array.from(choicesEl.children).forEach((el,ci) => el.classList.toggle('selected', ci === choiceIdx));
+      showFeedback(qIdx);
+      updateScoreLive();
+    }
+
+    function showFeedback(qIdx){
+      const item = quizQuestions[qIdx];
+      const userSel = answers[qIdx];
+      if(userSel === null) return;
+
+      const letters = ['A','B','C','D'];
+      const correctIdx = item.correct;
+      const correctText = item.choices[item.order[correctIdx]];
+      const userText = item.choices[item.order[userSel]];
+
+      Array.from(choicesEl.children).forEach((el,ci) => {
+        el.classList.remove('correct','incorrect');
+        if(ci === correctIdx) el.classList.add('correct');
+        if(ci === userSel && userSel !== correctIdx) el.classList.add('incorrect');
+      });
+
+      if(userSel === correctIdx){
+        feedbackEl.className = 'feedback-correct';
+        feedbackEl.textContent = 'Correct — ' + letters[userSel] + '. ' + userText;
+      } else {
+        feedbackEl.className = 'feedback-incorrect';
+        feedbackEl.innerHTML = 'Incorrect — you: <strong>' + letters[userSel] + '. ' + userText +
+          '</strong>; correct: <strong>' + letters[correctIdx] + '. ' + correctText + '</strong>';
+      }
+
+      expText.textContent = item.explain;
+      expDetails.style.display = 'block';
+      expDetails.open = true;
+    }
+
+    document.getElementById('next').addEventListener('click', () => {
+      if(index < quizQuestions.length - 1){
+        index++;
+        renderQuestion(index);
+      }
+    });
+
+    document.getElementById('prev').addEventListener('click', () => {
+      if(index > 0){
+        index--;
+        renderQuestion(index);
+      }
+    });
+
+    document.getElementById('submit').addEventListener('click', () => {
+      if(!confirm('Submit quiz and lock in your score?')) return;
+      let correct = 0;
+      quizQuestions.forEach((q,i) => {
+        if(answers[i] === q.correct) correct++;
+      });
+      scoreEl.textContent = correct + ' / ' + quizQuestions.length;
+      showFeedback(index);
+    });
+
+    document.getElementById('restart').addEventListener('click', () => {
+      if(!confirm('Restart quiz? This will clear answers and reshuffle choices.')) return;
+      quizQuestions = BASE_QUESTIONS.map(q => {
+        const order = shuffleArray([0,1,2,3]);
+        const correctDisplayIndex = order.indexOf(q.a);
+        return {
+          ...q,
+          order,
+          correct: correctDisplayIndex
+        };
+      });
+      answers = new Array(quizQuestions.length).fill(null);
+      index = 0;
+      scoreEl.textContent = '—';
+      renderQuestion(0);
+    });
+
+    document.getElementById('download').addEventListener('click', () => {
+      const html = '<!doctype html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([html], {type:'text/html'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'CompTIA_Motherboards_CPUs_BIOS_UEFI_Quiz_Shuffled.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    document.addEventListener('keydown', e => {
+      if(e.key === 'ArrowRight') document.getElementById('next').click();
+      if(e.key === 'ArrowLeft') document.getElementById('prev').click();
+      if(e.key >= '1' && e.key <= '4'){
+        const idxChoice = Number(e.key) - 1;
+        const currentButtons = document.querySelectorAll('.choice');
+        if(currentButtons[idxChoice]) currentButtons[idxChoice].click();
+      }
+    });
+
+    renderQuestion(0);
+  </script>
+</body>
+</html>
