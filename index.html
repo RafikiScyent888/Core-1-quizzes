@@ -12,6 +12,8 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(180d
 h1{margin:0 0 4px 0;font-size:22px}
 h2{margin:0 0 12px 0;font-size:18px}
 .sub{color:var(--muted);font-size:14px;margin-bottom:20px}
+.disclaimer{background:rgba(15,23,42,0.85);color:#f8fafc;font-size:12.5px;line-height:1.5;border-radius:10px;padding:10px 16px;margin:0 0 18px;text-align:center}
+.disclaimer strong{color:#fde047}
 .card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));padding:22px;border-radius:14px;box-shadow:0 8px 32px rgba(2,6,23,0.6);border:1px solid var(--line);margin-bottom:16px}
 button{background:var(--accent);color:#042027;border:0;padding:11px 18px;border-radius:8px;font-weight:700;cursor:pointer;font-size:14px}
 button:hover{filter:brightness(1.08)}
@@ -189,6 +191,7 @@ function renderSetup(){
     app.innerHTML = `
       <h1>CompTIA A+ Core 1 Practice Exam</h1>
       <div class="sub">${QUESTION_BANK.length} questions across all Core 1 (220-1201) objective domains. Pick your objectives and question count to begin.</div>
+      <div class="disclaimer"><strong>Educational use only.</strong> This site is a self-study practice tool built from original study questions. It is not affiliated with, endorsed by, or sponsored by CompTIA&reg;. CompTIA and A+ are trademarks of CompTIA, Inc. Objective tagging is an informal study aid, not an official exam blueprint &mdash; always confirm current exam content on comptia.org.</div>
       ${existing && !existing.finished ? `
         <div class="resume-banner">
           <div><strong>Quiz in progress</strong> &mdash; ${existing.answers.filter(a=>a!==null).length} of ${existing.order.length} answered.</div>
