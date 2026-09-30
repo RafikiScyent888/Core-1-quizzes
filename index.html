@@ -77,6 +77,15 @@ button.danger{background:transparent;color:var(--bad);border:1px solid var(--bad
 a.silent{color:var(--accent);text-decoration:none}
 @media(max-width:640px){.score-big{font-size:38px}}
 </style>
+<style id="aaa-contrast">
+/* AAA contrast (approved by the owner 30 Sept 2026) — Core 1 (dark theme) */
+:root { --muted: #cbd5e1; --bad: #fca5a5; }
+.tag.bad { color: #fecaca; }
+.pill { color: #bae6fd; }
+.tile.sun, .tile.sun .ttitle, .tile.sun .tsub { color: #2a1600; }
+.tile.sun .tsub { opacity: 1; }
+button:disabled { opacity: 1; background: #1e293b; color: #cbd5e1; border: 2px dashed #64748b; }
+</style>
 </head>
 <body>
 <div class="wrap" id="app"></div>

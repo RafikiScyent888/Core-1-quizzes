@@ -34,8 +34,17 @@ is no build step. GitHub Pages serves `main`.
 - `node verify/retake.mjs` drives "Retake the ones I missed" end to end, with
   contrast on painted pixels. `--plant` runs 7 plants.
 
-## Known, not yet fixed (owner told 30 Sept 2026)
+## Contrast (fixed 30 September 2026)
 
-These colours predate this work and fall under 7:1: the Quick Quiz tiles
-(2.9–4.1:1), the "Your answer was wrong" tag (5.5:1) and the disabled Prev
-button (2.2:1). The fix is a colour change, so it needs a preview first.
+Every student-facing screen meets AAA on painted pixels. The owner approved
+the before/after preview: "I like all of the changes in all of the quizzes".
+- The approved colours are in a block marked "AAA contrast" (`<style id="aaa-contrast">` at the end of the head in `index.html`).
+- Colour changes stay in the royal palette, with no new hues.
+- Disabled buttons are no longer faded out. They're solid silver with a dashed
+  border and readable text.
+- `node verify/contrast.mjs` drives every screen (dashboard, setup, question
+  before and after answering, results, paused-quiz banner) and fails on
+  anything under 7:1 (4.5:1 for large text). `--plant` puts back the old
+  sky-blue buttons and must fail.
+
+Run it after any colour or layout change.
