@@ -1,8 +1,9 @@
 # CompTIA A+ Core 1 Practice Exam
 
 A self-contained, single-file practice exam app for CompTIA A+ Core 1
-(220-1201), built from a bank of 403 multiple-choice questions pulled from
-this repo's original day-by-day quizzes.
+(220-1201), built from a bank of 718 multiple-choice questions. Most come
+from this repo's original day-by-day quizzes; 50 were added on
+30 September 2026 to bring every topic to at least 20.
 
 **[Open `index.html`](./index.html)** — no install, no server, no build step.
 Download it and double-click, or host it anywhere (GitHub Pages, S3, a local
@@ -10,13 +11,20 @@ file server) and it just works.
 
 ## Features
 
-- **403 questions** covering all 5 official CompTIA A+ Core 1 (220-1201)
-  objective domains:
-  - Mobile Devices
-  - Networking
-  - Hardware
-  - Virtualization and Cloud Computing
-  - Hardware and Network Troubleshooting
+- **718 questions** across the 5 CompTIA A+ Core 1 (220-1201, V15) domains,
+  filed under **15 topics**, with **at least 20 questions on every topic**:
+  - Mobile Devices: 1.1 Hardware setup, 1.2 Accessory options, 1.3 Network
+    setup, 1.4 Troubleshooting
+  - Networking: 2.1 Protocols and ports, 2.2 SOHO networks, 2.3 Networking tools
+  - Hardware: 3.1 Component installation, 3.2 Cables and connectors,
+    3.3 Peripheral devices, 3.4 Motherboards and power
+  - Virtualization and Cloud Computing: 4.1 Virtualization concepts,
+    4.2 Cloud models
+  - Hardware and Network Troubleshooting: 5.1 Diagnosing issues,
+    5.2 Troubleshooting tools
+
+  The topics come from the instructor's objectives list and are numbered in
+  its order; they are not CompTIA's official objective numbers.
 - **Filter by domain** — study one objective area or mix any combination.
 - **Choose 45–245 questions** per attempt, clamped to however many are
   available for your current domain selection.
