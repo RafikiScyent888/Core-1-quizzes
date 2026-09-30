@@ -29,6 +29,10 @@ file server) and it just works.
   so you can close the tab and pick up exactly where you left off, even
   after a full page reload.
 - **Missed-question review** at the end of every attempt.
+- **Retake the ones you missed.** After any quiz, one button starts a new
+  round with only the questions you got wrong (or didn't answer), in a new
+  order and with the answers reshuffled. Keep retaking, round after round,
+  until you've got every one right.
 
 ## How it works
 
