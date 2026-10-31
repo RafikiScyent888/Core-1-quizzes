@@ -62,6 +62,33 @@ address students use, and the lesson list for linking each topic.
   rafikiscyent888.github.io, so they should all use that key.
 - **Review:** a square on the results map opens that question, locked.
 
+## Light or dark (31 October 2026, preview)
+
+The owner asked for a dark/light switch on every test bank ("we need to keep
+things easy for my students to read"). None of the five quiz repos had ever
+had one; the acronym sites do. Decided by the owner before building:
+- **One choice for the whole program:** the key is `cwp:theme` ("light" or
+  "dark"), the same key the acronym sites use, so a choice made there holds
+  here. Nothing is saved until the student presses the button.
+- **Core 1 starts dark** when nothing is chosen, whatever the device is set
+  to (the owner's choice; the other test banks follow the device).
+- Previewed on Core 1 first, then Core 2, Network+, Security+, CySA+.
+
+How it works:
+- A script in the head stamps `data-theme` on `<html>` before the page
+  paints, so it never flashes.
+- `#themeBtn` sits beside Easier reading and names where it goes ("Light
+  mode" on the dark page), with a sun or moon; its label says both ("Switch
+  to light mode. Currently dark mode."), as on the acronym sites.
+- **Light mode** is one block, `<style id="light-theme">`, every rule under
+  `:root[data-theme="light"]`: slate text on white and silver, royal navy
+  buttons with white lettering, focus ring purple.
+- **Topic colours in light mode:** `TOPIC_DEEP`, a deep shade of each
+  topic's own hue, white lettering over 7:1, neighbours alternating in depth
+  so they stay apart. `tc(id)` carries both (`--tc` bright, `--tcd` deep).
+- **Dark mode is unchanged.** Every new rule is scoped to light; the only
+  other change is the button in `.topline`.
+
 ## Checks: `verify/` (needs Playwright; not needed to run the site)
 
 - `node verify/objectives.mjs` checks topics against
@@ -71,8 +98,10 @@ address students use, and the lesson list for linking each topic.
 - `node verify/retake.mjs` drives "Retake the ones I missed" end to end, with
   contrast on painted pixels. `--plant` runs 7 plants.
 - `node verify/scorecard.mjs` drives the score card, map, chips, parts bar,
-  Missed list, Reset, the prompts, Shuffle order, review and Easier reading.
-  `--plant` runs 22 plants.
+  Missed list, Reset, the prompts, Shuffle order, review, Easier reading and
+  light or dark (starts dark on a light or dark device, nothing saved until
+  chosen, the button's words, `cwp:theme`, a choice from another site, the
+  deep shades). `--plant` runs 29 plants.
 
 ## Contrast (fixed 30 September 2026)
 
@@ -88,5 +117,10 @@ the before/after preview: "I like all of the changes in all of the quizzes".
   screen, and a phone) and fails on
   anything under 7:1 (4.5:1 for large text). `--plant` puts back the old
   sky-blue buttons and must fail.
+- Since 31 October it drives every screen twice, dark then light, each in a
+  fresh browser, and fails if a sweep finds the page in the other theme.
+  `--theme=light` runs one. Calibrated with plants: faint light-only text,
+  an unreadable light chip, the light hover fix removed, and the theme
+  setting ignored; all were caught.
 
 Run it after any colour or layout change.

@@ -22,6 +22,11 @@
 //     remembered across visits; switching part-way keeps every answer
 //   - review from the results: a square opens that question, locked
 //   - Easier reading stays on across a reload
+//   - light or dark (31 October 2026): with nothing chosen Core 1 starts dark,
+//     even on a device set to light; nothing is saved until the button is
+//     pressed; the button names where it goes and saves the choice under the
+//     program's key "cwp:theme", where a choice made on another site is honoured;
+//     in light mode every topic is its deep shade, white lettering over 7:1
 //   - answers can be chosen from the keyboard; no script errors
 //   node verify/scorecard.mjs [file]    file defaults to index.html
 //   node verify/scorecard.mjs --plant   proves each check can fail
@@ -41,7 +46,7 @@ const lum = c => { const f = v => (v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.05
 const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
 const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
 const cssRgb = s => (s.match(/\d+/g) || []).slice(0, 3).map(Number);
-const INK = [7, 16, 33];
+const INK = [7, 16, 33], WHITE = [255, 255, 255], THEME = 'cwp:theme';
 
 async function run(file) {
   const dir = path.dirname(path.resolve(file)), base = path.basename(file);
@@ -261,6 +266,46 @@ async function run(file) {
     ok(await page.evaluate(() => parseFloat(getComputedStyle(document.body).letterSpacing) > 0), 'Easier reading does not widen the letter spacing');
     await page.click('#easierBtn'); await page.reload();
     ok(!(await page.evaluate(() => document.documentElement.classList.contains('easier'))), 'Easier reading cannot be turned off');
+
+    // light or dark
+    const theme = () => page.evaluate(() => document.documentElement.getAttribute('data-theme'));
+    const saved = () => page.evaluate(k => localStorage.getItem(k), THEME);
+    const btn = () => page.$eval('#themeBtn', b => [b.textContent.replace(/\s+/g, ' ').trim(), b.getAttribute('aria-label')]).catch(() => []);
+    await page.evaluate(k => localStorage.removeItem(k), THEME); await page.reload();
+    ok((await theme()) === 'dark', `with no choice saved Core 1 starts ${await theme()}, not dark`);
+    ok((await saved()) === null, `a theme (${await saved()}) is saved before the student chooses one`);
+    let b1 = await btn();
+    ok(b1[0] === 'Light mode' && b1[1] === 'Switch to light mode. Currently dark mode.', `on the dark page the theme button reads ${JSON.stringify(b1)}`);
+    const bodyBg = () => page.evaluate(() => getComputedStyle(document.body).backgroundImage);
+    const darkBg = await bodyBg();
+    await page.click('#themeBtn');
+    ok((await theme()) === 'light', 'the theme button does not switch to light');
+    ok((await saved()) === 'light', `the light choice is saved as ${await saved()}, not under the program's key`);
+    ok((await bodyBg()) !== darkBg, 'light mode does not repaint the page');
+    b1 = await btn();
+    ok(b1[0] === 'Dark mode' && b1[1] === 'Switch to dark mode. Currently light mode.', `on the light page the theme button reads ${JSON.stringify(b1)}`);
+    await page.reload();
+    ok((await theme()) === 'light', 'light mode is forgotten on reload');
+    const DEEP = await page.evaluate(() => typeof TOPIC_DEEP === 'object' ? TOPIC_DEEP : {});
+    ok(subs.every(id => /^#[0-9a-f]{6}$/i.test(DEEP[id] || '')), 'a topic has no deep shade for the light page');
+    ok(new Set(subs.map(id => (DEEP[id] || '').toLowerCase())).size === subs.length, 'two topics share a deep shade');
+    for (const id of subs) if (DEEP[id]) ok(ratio(hexRgb(DEEP[id]), WHITE) >= 7, `white lettering on ${id}'s deep shade ${DEEP[id]} is ${ratio(hexRgb(DEEP[id]), WHITE).toFixed(2)}:1, under 7:1`);
+    const ldots = await page.$$eval('.domain-item', els => els.map(e => [e.querySelector('label').textContent.split(' ')[0], getComputedStyle(e.querySelector('.dot')).backgroundColor]));
+    ok(ldots.length === subs.length, `in light mode the setup shows ${ldots.length} topic colours`);
+    for (const [id, bg] of ldots) if (DEEP[id]) ok(cssRgb(bg).join() === hexRgb(DEEP[id]).join(), `in light mode ${id} is painted ${bg}, not its deep shade ${DEEP[id]}`);
+    await page.click('#themeBtn'); await page.reload();
+    ok((await theme()) === 'dark' && (await saved()) === 'dark', 'switching back to dark is not kept');
+    // a device set to light, nothing chosen: still dark; a choice made on another site wins
+    for (const scheme of ['light', 'dark']) {
+      const ctx = await browser.newContext({ colorScheme: scheme }); const p2 = await ctx.newPage();
+      await p2.goto(URL); await p2.evaluate(() => localStorage.clear()); await p2.reload();
+      const t0 = await p2.evaluate(() => document.documentElement.getAttribute('data-theme'));
+      ok(t0 === 'dark', `on a device set to ${scheme}, with nothing chosen, Core 1 starts ${t0}`);
+      await p2.evaluate(k => localStorage.setItem(k, 'light'), THEME); await p2.reload();
+      const t1 = await p2.evaluate(() => document.documentElement.getAttribute('data-theme'));
+      ok(t1 === 'light', `light chosen on another of the program's sites shows ${t1} here`);
+      await ctx.close();
+    }
   } catch (e) { fails.push('could not drive the page — ' + String(e.message).split('\n')[0]); }
   ok(!errors.length, 'script errors: ' + errors.join(' | '));
   await browser.close(); srv.close();
@@ -292,6 +337,13 @@ if (process.argv.includes('--plant')) {
     'practise draws from every topic': ['const all = QUESTION_BANK.filter(q => q.sub === sub).map(q => q.id);', 'const all = QUESTION_BANK.map(q => q.id);'],
     'no keyboard answers': ["if(e.key === 'Enter' || e.key === ' ')", 'if(false)'],
     'easier reading forgotten': ["try{ localStorage.setItem(EASIER_KEY, on ? '1' : '0'); }catch(e){}", ''],
+    'theme follows the device': ['t === "light" || t === "dark" ? t : "dark"', 't === "light" || t === "dark" ? t : (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark")'],
+    'theme saved before choosing': ['try{ t = localStorage.getItem("cwp:theme"); }catch(e){}', 'try{ t = localStorage.getItem("cwp:theme") || (localStorage.setItem("cwp:theme", "dark"), "dark"); }catch(e){}'],
+    'theme choice not saved': ['try{ localStorage.setItem(THEME_KEY, next); }catch(e){}', ''],
+    'theme saved on its own key': ['const THEME_KEY = "cwp:theme";', 'const THEME_KEY = "core1_theme";'],
+    'button names the theme it is in': ["(next === 'light' ? 'Light mode' : 'Dark mode')", "(next === 'light' ? 'Dark mode' : 'Light mode')"],
+    'a deep shade too light for lettering': ['"4.1": "#412b8a"', '"4.1": "#8b7fd6"'],
+    'light mode keeps the bright colours': [':root[data-theme="light"] .dot{background:var(--tcd);', ':root[data-theme="light"] .dot{background:var(--tc);'],
   };
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'scorecard-plant-'));
   let missedN = 0;
@@ -308,5 +360,5 @@ if (process.argv.includes('--plant')) {
 } else {
   const fails = await run(process.argv[2] || path.join(HERE, '..', 'index.html'));
   if (fails.length) { console.log('FAIL ' + fails.length); fails.forEach(f => console.log('  - ' + f)); process.exit(1); }
-  console.log('PASS — topic colours, parts bar, chips, map, score card, Missed list (Study these first, Retake all missed, Practise this topic), Reset, leave and finish prompts, Shuffle order, review, Easier reading, keyboard answers, no script errors');
+  console.log('PASS — topic colours, parts bar, chips, map, score card, Missed list (Study these first, Retake all missed, Practise this topic), Reset, leave and finish prompts, Shuffle order, review, Easier reading, light or dark (starts dark, the choice kept for the program), keyboard answers, no script errors');
 }
