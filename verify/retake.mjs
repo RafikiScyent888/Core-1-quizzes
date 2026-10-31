@@ -166,7 +166,7 @@ if (process.argv.includes('--plant')) {
     'no retake button': ["      ${missed.length ? `<button id=\"retakeBtn\">", "      ${false ? `<button id=\"retakeBtn\">"],
     'finish message too early': ['${round > 1 && missed.length === 0 ?', '${round > 1 ?'],
     'banner in the muted grey': ['.retake-banner{border:1px solid var(--accent);border-radius:10px;padding:10px 14px;margin-bottom:14px;color:#e6eef6;', '.retake-banner{border:1px solid var(--accent);border-radius:10px;padding:10px 14px;margin-bottom:14px;color:#64748b;'],
-    'answers not reshuffled on retake': ['const order = shuffle(ids).map(id => ({ id: id, displayOrder: shuffle([0,1,2,3]) }));', 'const order = shuffle(ids).map(id => ({ id: id, displayOrder: [0,1,2,3] }));'],
+    'answers not reshuffled on retake': ['  const order = makeOrder(ids, shuffleOn());\n  const session = {', '  const order = makeOrder(ids, false);\n  const session = {'],
   };
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'retake-plant-'));
   let missed = 0;

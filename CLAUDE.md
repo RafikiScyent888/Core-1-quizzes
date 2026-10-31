@@ -25,6 +25,41 @@ is no build step. GitHub Pages serves `main`.
   That's 50 new questions, `q0669`–`q0718`, each with the field
   `"source": "Added 30 Sept 2026 ..."`.
 
+## Score card, question map and filters (31 October 2026, preview)
+
+Built to the owner's decisions in the doc "Test banks: score card, question
+map and filters (plan)" (https://claude.ai/artifact/6vcGwyvSsrwfHBWaKp6rq5).
+It is on the branch `claude/student-resources-knowledge-base-vgvfni` and
+waits for the owner's approval before it goes to `main`.
+- **Topic colours:** `TOPIC_COLOR`, the owner's rainbow, one per topic (outside
+  the royal six, so previewed first). Dark lettering on each is over 7:1. A
+  colour always goes with the topic's number and name.
+- **Quiz screen:** the parts bar (one part per topic, as wide as its share),
+  the filter chips (All, each topic by number, "New for the updated
+  objectives" for the `source: "Added 30 Sept 2026..."` questions, Missed),
+  Shuffle order, the "Jump to any question" map (border is the topic colour;
+  right and wrong told by fill, a tick or cross and words; a wrong number
+  struck through; the current one ringed in white), and beside them the score
+  card, "Study these first" and the two buttons.
+- **The lasting Missed list:** `core1_missed_v1`, `{id: {n, at}}`. A wrong
+  answer goes on and a right answer comes off, in any quiz. "Study these
+  first" lists its topics, most missed first, each with "Practise this topic"
+  (up to 25 of that topic, its missed ones included) and "Review in CertMaster
+  Learn". "Retake all missed" is the whole list; "Retake the N I missed" (this
+  quiz) stays as it was.
+- **CertMaster Learn:** `CERTMASTER_URL` is CompTIA's sign-in page
+  (learn.comptia.org/login) until the owner confirms the address students
+  use. No lesson numbers: the 220-1201 lesson list isn't public.
+- **Reset** clears this quiz only, after asking; the Missed list stays.
+  Leaving a quiz part-way and finishing with questions left also ask first.
+- **Shuffle order** (`core1_shuffle_v1`, on by default) shuffles the questions
+  and their answers; off gives the bank's order and the answers as written.
+  Switching part-way keeps every answer.
+- **Easier reading:** the button at the top, remembered under
+  `cwp-easier-reading`. All five test banks share the origin
+  rafikiscyent888.github.io, so they should all use that key.
+- **Review:** a square on the results map opens that question, locked.
+
 ## Checks: `verify/` (needs Playwright; not needed to run the site)
 
 - `node verify/objectives.mjs` checks topics against
@@ -33,6 +68,9 @@ is no build step. GitHub Pages serves `main`.
   one-topic quiz. `--plant` runs 10 plants.
 - `node verify/retake.mjs` drives "Retake the ones I missed" end to end, with
   contrast on painted pixels. `--plant` runs 7 plants.
+- `node verify/scorecard.mjs` drives the score card, map, chips, parts bar,
+  Missed list, Reset, the prompts, Shuffle order, review and Easier reading.
+  `--plant` runs 22 plants.
 
 ## Contrast (fixed 30 September 2026)
 
@@ -43,7 +81,9 @@ the before/after preview: "I like all of the changes in all of the quizzes".
 - Disabled buttons are no longer faded out. They're solid silver with a dashed
   border and readable text.
 - `node verify/contrast.mjs` drives every screen (dashboard, setup, question
-  before and after answering, results, paused-quiz banner) and fails on
+  before and after answering, results, paused-quiz banner; since 31 October
+  also a chip and a part chosen, the confirm dialog, Easier reading on every
+  screen, and a phone) and fails on
   anything under 7:1 (4.5:1 for large text). `--plant` puts back the old
   sky-blue buttons and must fail.
 
