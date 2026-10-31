@@ -3,6 +3,9 @@
 // paused-quiz banner. Text is hidden, the page photographed, and each run of
 // text compared with the real pixels behind it: 7:1, or 4.5:1 for large text
 // (24px, or 18.66px bold). Emoji are skipped; they draw in their own colours.
+// On a gradient, where no one colour covers the text's box, the darkest and
+// lightest parts of the background are measured too (fixed 31 October 2026:
+// before that, text on a gradient went unmeasured and passed).
 // Since 31 October 2026 every screen is driven twice: once dark and once light
 // (the student's choice, kept under "cwp:theme"), each in a fresh browser, and
 // every sweep confirms the page really is in the theme it is measuring.
@@ -76,7 +79,18 @@ async function sweep(state, opt = {}) {
     return runs.map(r => { const w = Math.max(1, Math.round(r.w - 4)), h = Math.max(1, Math.round(r.h - 4));
       const d = x.getImageData(Math.round(r.x + 2), Math.round(r.y + 2), w, h).data, cnt = {}; let tot = 0;
       for (let i = 0; i < d.length; i += 4) { const k = d[i] + ',' + d[i + 1] + ',' + d[i + 2]; cnt[k] = (cnt[k] || 0) + 1; tot++; }
-      return Object.entries(cnt).filter(([, v]) => v / tot >= 0.08).map(([k]) => k.split(',').map(Number)); });
+      const major = Object.entries(cnt).filter(([, v]) => v / tot >= 0.08);
+      const out = major.map(([k]) => k.split(',').map(Number));
+      // A gradient (31 October 2026): no one colour covers the box, so the
+      // colours above found little or nothing and the text went unmeasured.
+      // Measure the background's darkest and lightest parts as well.
+      if (major.reduce((a, [, v]) => a + v, 0) / tot < 0.6) {
+        const px = []; for (let i = 0; i < d.length; i += 4) px.push([d[i], d[i + 1], d[i + 2]]);
+        const L = c => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+        px.sort((a, b) => L(a) - L(b));
+        out.push(px[Math.floor((px.length - 1) * 0.05)], px[Math.floor((px.length - 1) * 0.95)]);
+      }
+      return out; });
   }, { b64: png.toString('base64'), runs });
   runs.forEach((r, i) => {
     const m = r.c.match(/[\d.]+/g).map(Number); const a = (m[3] ?? 1) * r.op;

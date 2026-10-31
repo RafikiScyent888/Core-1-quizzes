@@ -92,6 +92,16 @@ How it works:
 - **Dark mode is unchanged.** Every new rule is scoped to light; the only
   other change is the button in `.topline`.
 
+## AAA on gradients (fixed 31 October 2026)
+
+The contrast check only took a background colour that covered 8% of a text's
+box, so on a gradient it found none and passed the text unmeasured. Fixed in
+`verify/contrast.mjs`: the darkest and lightest parts of a gradient are now
+measured too. It found white on the bright tiles at 2.9:1 (orange) and 4.3:1
+(purple), in both modes. `<style id="aaa-gradients">` deepens them, same
+hues: the fire tile is now deep red, the lightning tile deep purple, white
+lettering over 7:1. A planted old orange tile is caught.
+
 ## Checks: `verify/` (needs Playwright; not needed to run the site)
 
 - `node verify/objectives.mjs` checks topics against
@@ -124,6 +134,7 @@ the before/after preview: "I like all of the changes in all of the quizzes".
   fresh browser, and fails if a sweep finds the page in the other theme.
   `--theme=light` runs one. Calibrated with plants: faint light-only text,
   an unreadable light chip, the light hover fix removed, and the theme
-  setting ignored; all were caught.
+  setting ignored; all were caught. Text on gradients is measured too
+  (above).
 
 Run it after any colour or layout change.

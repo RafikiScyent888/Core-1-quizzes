@@ -95,6 +95,16 @@ a.silent{color:var(--accent);text-decoration:none}
 .tile.sun .tsub { opacity: 1; }
 button:disabled { opacity: 1; background: #1e293b; color: #cbd5e1; border: 2px dashed #64748b; }
 </style>
+<style id="aaa-gradients">
+/* AAA on gradients (fixed 31 October 2026). The contrast check never measured
+   text on a gradient, so these passed unmeasured: white on the bright tiles was
+   2.9:1 (orange) and 4.3:1 (purple). Same hues, deeper; white lettering now over
+   7:1 in both modes. */
+.tile.lightning{background:linear-gradient(135deg,#6141a9,#4c1d95)}
+.tile.fire{background:linear-gradient(135deg,#ae0019,#8a030a)}
+.tile.green{background:linear-gradient(135deg,#046244,#014c34)}
+.tile .tsub{opacity:1}
+</style>
 <style id="test-bank">
 /* Score card, question map, filters and the Missed list (31 October 2026).
    Topic colours are the owner's rainbow (TOPIC_COLOR); a colour always goes
