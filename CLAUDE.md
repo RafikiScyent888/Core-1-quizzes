@@ -62,11 +62,14 @@ address students use, and the lesson list for linking each topic.
   rafikiscyent888.github.io, so they should all use that key.
 - **Review:** a square on the results map opens that question, locked.
 
-## Light or dark (31 October 2026, preview)
+## Light or dark (31 October 2026)
 
 The owner asked for a dark/light switch on every test bank ("we need to keep
 things easy for my students to read"). None of the five quiz repos had ever
-had one; the acronym sites do. Decided by the owner before building:
+had one; the acronym sites do. The owner saw the preview (both sets of topic
+colours, a quiz in each mode, the dashboard, results, the dialog, Easier
+reading, a phone) and approved it: "Push it and do the rest". Live on `main`
+the same day. Decided by the owner before building:
 - **One choice for the whole program:** the key is `cwp:theme` ("light" or
   "dark"), the same key the acronym sites use, so a choice made there holds
   here. Nothing is saved until the student presses the button.
