@@ -42,6 +42,7 @@ async function sweep(state, opt = {}) {
       if (/^[\p{Extended_Pictographic}\uFE0F\u200D\s]+$/u.test(n.textContent)) continue;  // emoji draw in their own colours
       const el = n.parentElement; if (el.closest('script,style,noscript')) continue;
       const cs = getComputedStyle(el); if (cs.visibility === 'hidden' || cs.display === 'none') continue;
+      { const br = el.getBoundingClientRect(); if (br.width <= 2 || br.height <= 2) continue; }  // screen-reader-only text: clipped to 1px, never painted
       let op = 1; for (let a = el; a; a = a.parentElement) op *= parseFloat(getComputedStyle(a).opacity);
       const disabled = !!el.closest(':disabled,[aria-disabled="true"]');
       const rg = document.createRange(); rg.selectNodeContents(n);
