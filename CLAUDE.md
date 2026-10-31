@@ -25,12 +25,14 @@ is no build step. GitHub Pages serves `main`.
   That's 50 new questions, `q0669`–`q0718`, each with the field
   `"source": "Added 30 Sept 2026 ..."`.
 
-## Score card, question map and filters (31 October 2026, preview)
+## Score card, question map and filters (31 October 2026)
 
 Built to the owner's decisions in the doc "Test banks: score card, question
 map and filters (plan)" (https://claude.ai/artifact/6vcGwyvSsrwfHBWaKp6rq5).
-It is on the branch `claude/student-resources-knowledge-base-vgvfni` and
-waits for the owner's approval before it goes to `main`.
+The owner saw the preview (the colours, a quiz, the filters, Reset, results,
+"Study these first", Easier reading, a phone) and approved it: "I like Core 1,
+push it." Live on `main` the same day. Still open: the CertMaster Learn
+address students use, and the lesson list for linking each topic.
 - **Topic colours:** `TOPIC_COLOR`, the owner's rainbow, one per topic (outside
   the royal six, so previewed first). Dark lettering on each is over 7:1. A
   colour always goes with the topic's number and name.
