@@ -31,8 +31,8 @@ Built to the owner's decisions in the doc "Test banks: score card, question
 map and filters (plan)" (https://claude.ai/artifact/6vcGwyvSsrwfHBWaKp6rq5).
 The owner saw the preview (the colours, a quiz, the filters, Reset, results,
 "Study these first", Easier reading, a phone) and approved it: "I like Core 1,
-push it." Live on `main` the same day. Still open: the CertMaster Learn
-address students use, and the lesson list for linking each topic.
+push it." Live on `main` the same day. Still open: the lesson list for
+linking each topic (the CertMaster Learn address was settled 7 November 2026).
 - **Topic colours:** `TOPIC_COLOR`, the owner's rainbow, one per topic (outside
   the royal six, so previewed first). Dark lettering on each is over 7:1. A
   colour always goes with the topic's number and name.
@@ -45,13 +45,19 @@ address students use, and the lesson list for linking each topic.
   card, "Study these first" and the two buttons.
 - **The lasting Missed list:** `core1_missed_v1`, `{id: {n, at}}`. A wrong
   answer goes on and a right answer comes off, in any quiz. "Study these
-  first" lists its topics, most missed first, each with "Practise this topic"
+  first" lists its topics, most missed first, each with "Practice this topic"
   (up to 25 of that topic, its missed ones included) and "Review in CertMaster
   Learn". "Retake all missed" is the whole list; "Retake the N I missed" (this
   quiz) stays as it was.
-- **CertMaster Learn:** `CERTMASTER_URL` is CompTIA's sign-in page
-  (learn.comptia.org/login) until the owner confirms the address students
-  use. No lesson numbers: the 220-1201 lesson list isn't public.
+- **CertMaster Learn:** `CERTMASTER_URL` is the address the owner gave on 7 November 2026,
+  https://www.comptia.org/en-us/resources/certmaster-training/learn/ (the owner: "needs to be the
+  hyperlink for Review in CertMaster Learn across all of the quizzes"). It replaced CompTIA's sign-in
+  page; `verify/scorecard.mjs` checks the link is exactly this address. No lesson numbers: the
+  220-1201 lesson list isn't public.
+- **"Practice this topic" (7 November 2026):** the owner: "Please fix the to 'Practice this topic' across
+  all of the quizzes." The link, the topic quiz's banner ("Practicing ...") and its title use the American
+  spelling; `verify/scorecard.mjs` checks the link's words and that no "Practis" is left on the page. The
+  internal attribute `data-practise` keeps its name: students never see it.
 - **Reset** clears this quiz only, after asking; the Missed list stays.
   Leaving a quiz part-way and finishing with questions left also ask first.
 - **Shuffle order** (`core1_shuffle_v1`, on by default) shuffles the questions
